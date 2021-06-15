@@ -35,7 +35,7 @@ namespace Vector_Editor
         {
             CurrentPoint = 1;
             TPoint point = new TPoint();
-            point.x = 0; point.y = 0;
+            point.X = 0; point.Y = 0;
             for (int i = 0; i < DataSize; i++)
             {
                 Data[i] = point;
@@ -50,8 +50,8 @@ namespace Vector_Editor
 
         public static string GetStringPoint(int DataItem)
             {
-                return "(" + DataItem.ToString() + ") x: " + Data[DataItem].x.ToString()
-                + "; y: " + Data[DataItem].y.ToString();
+                return "(" + DataItem.ToString() + ") x: " + Data[DataItem].X.ToString()
+                + "; y: " + Data[DataItem].Y.ToString();
         }
 
         public static int GetDataSize()
@@ -70,8 +70,8 @@ namespace Vector_Editor
         {
             foreach (var item in TLst.Data)
             {
-                if (Math.Abs(point.x - item.GetPointX()) < 10 &&
-                    Math.Abs(point.y - item.GetPointY()) < 10)
+                if (Math.Abs(point.X - item.X) < 10 &&
+                    Math.Abs(point.Y - item.Y) < 10)
                 {
                     return true;
                 }
@@ -89,7 +89,6 @@ namespace Vector_Editor
             if (position < FirstEinList || position > DataSize)
                 throw new IndexOutOfRangeException("Invalid Position"); ;
 
-            Data[position].SetDisable();
             CurrentPoint--;
             for (int i = position; i < CurrentPoint; i++)
             {

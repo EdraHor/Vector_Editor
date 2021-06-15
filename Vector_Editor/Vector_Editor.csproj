@@ -56,6 +56,7 @@
     <Compile Include="IToolBehavior.cs" />
     <Compile Include="TData.cs" />
     <Compile Include="TLstPointer.cs" />
+    <Compile Include="TLstShape.cs" />
     <Compile Include="ToolBehaviorErase.cs" />
     <Compile Include="ToolBehaviorHand.cs" />
     <Compile Include="ToolBehaviorPoints.cs" />
@@ -70,6 +71,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TShape.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

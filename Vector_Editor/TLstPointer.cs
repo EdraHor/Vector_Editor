@@ -155,7 +155,7 @@ namespace Vector_Editor
             Node<TPoint> current = FirstItem;
             while (current != null)
             {
-                if (Math.Abs(data.x - current.Data.x) < R && Math.Abs(data.y - current.Data.y) < R) 
+                if (Math.Abs(data.X - current.Data.X) < R && Math.Abs(data.Y - current.Data.Y) < R) 
                     return true;
                 current = current.Next;
             }
@@ -167,8 +167,8 @@ namespace Vector_Editor
             Node<TPoint> current = FirstItem;
             while (current != null)
             {
-                if (Math.Abs(e.X - current.Data.x) < 10 &&
-                    Math.Abs(e.Y - current.Data.y) < 10)
+                if (Math.Abs(e.X - current.Data.X) < 10 &&
+                    Math.Abs(e.Y - current.Data.Y) < 10)
                     return true;
                 current = current.Next;
             }
@@ -232,8 +232,8 @@ namespace Vector_Editor
         }
         public string GetStringPoint(int position)
         {
-            return "(" + position.ToString() + ") x: " + GetItem(position).x.ToString()
-            + "; y: " + GetItem(position).y.ToString();
+            return "(" + position.ToString() + ") x: " + GetItem(position).X.ToString()
+            + "; y: " + GetItem(position).Y.ToString();
         }
         
         public void SetItem(int position, TPoint data) //Устанавливает точку в конкретную позицию
@@ -241,7 +241,7 @@ namespace Vector_Editor
             if (position <= Count)
             {
                 Node<TPoint> current = FirstItem;
-                for (int i = 1; i < position; i++)
+                for (int i = 0; i < position; i++)
                 {
                     current = current.Next;
                 }
@@ -304,9 +304,9 @@ namespace Vector_Editor
                 return NearPointPosition;
 
         }
-        public int GetDistanceToPoint(TPoint point,int pos)
+        public int GetDistanceToPoint(TPoint point,int pos) //Возвращает растояние до точки
         {
-            return (int)Math.Sqrt(Math.Pow(point.x - GetItem(pos).x, 2) + Math.Pow(point.y - GetItem(pos).y, 2));
+            return (int)Math.Sqrt(Math.Pow(point.X - GetItem(pos).X, 2) + Math.Pow(point.Y - GetItem(pos).Y, 2));
         }
 
         public void RotateAt(int xO, int yO, float angle)
@@ -314,11 +314,11 @@ namespace Vector_Editor
             for (int i = 0; i < Count; i++)
             {
                 float angleRad = (float)(angle * Math.PI / 180);
-                int x = GetItem(i).x;
-                int y = GetItem(i).y;
+                int x = GetItem(i).X;
+                int y = GetItem(i).Y;
                 
-                GetItem(i).x = xO+(int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad));
-                GetItem(i).y = yO+(int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad));
+                GetItem(i).X = xO+(int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad));
+                GetItem(i).Y = yO+(int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad));
             }
         }
         public void RotateAt(TPoint point, double angle)
@@ -326,19 +326,19 @@ namespace Vector_Editor
             float angleRad = (float)(angle * Math.PI / 180);
             for (int i = 0; i < Count; i++)
             {
-                int x = GetItem(i).x; int y = GetItem(i).y;
-                int xO = point.x; int yO = point.y;
+                int x = GetItem(i).X; int y = GetItem(i).Y;
+                int xO = point.X; int yO = point.Y;
 
-                GetItem(i).x = xO+(int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad));
-                GetItem(i).y = yO+(int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad));
+                GetItem(i).X = xO+(int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad));
+                GetItem(i).Y = yO+(int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad));
             }
         }
         public void TransformAt(int xt, int yt)
         {
             for (int i = 0; i < Count; i++)
             {
-                GetItem(i).x += xt;
-                GetItem(i).y += yt;
+                GetItem(i).X += xt;
+                GetItem(i).Y += yt;
             }
         }
 
@@ -348,8 +348,8 @@ namespace Vector_Editor
             double SumY = 0;
             for (int i = 0; i < Count; i++)
             {
-                SumX += GetItem(i).x;
-                SumY += GetItem(i).y;
+                SumX += GetItem(i).X;
+                SumY += GetItem(i).Y;
             }
             return new TPoint(SumX / Count, SumY / Count);
         }

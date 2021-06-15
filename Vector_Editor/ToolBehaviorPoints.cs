@@ -12,7 +12,7 @@ namespace Vector_Editor
         SolidBrush drawBrush = new SolidBrush(Color.Black);
         int margin = 4;
 
-        public void Enter(List<TLstPointer<TPoint>> ShapeList)
+        public void Enter(TLstShape<TShape> ShapeList)
         {
             Console.WriteLine("Enter Points behavior");
         }
@@ -33,7 +33,7 @@ namespace Vector_Editor
             }
             else
             {
-                if (!list.EqualPoints(point, 10)) // Точки между линии // Не полностью работает работает!
+                if (!list.EqualPoints(point, 10)) // Точки между линии //Не полностью работает работает!
                 {
                     if (list.Count>0)
                         list.InstanceItem(list.GetNearPoint(point)+1,point);
@@ -55,20 +55,7 @@ namespace Vector_Editor
 
         public void Paint(PaintEventArgs e, TLstPointer<TPoint> list)
         {
-            for (int i = 0; i < list.Count; i++)
-            {
-                e.Graphics.DrawEllipse(new Pen(list.GetItem(i).color),
-                list.GetItem(i).x - 5, list.GetItem(i).y - 5, 10, 10); //Рисуем все точки
 
-                e.Graphics.DrawString(i.ToString(), drawFont, drawBrush, 
-                    list.GetItem(i).x + margin, list.GetItem(i).y + margin);
-
-                if (i > 0 && list.drawLines)
-                {
-                    e.Graphics.DrawLine(pen, list.GetItem(i).x, list.GetItem(i).y,
-                        list.GetItem(i - 1).x, list.GetItem(i - 1).y);
-                }
-            }
         }
     }
 }

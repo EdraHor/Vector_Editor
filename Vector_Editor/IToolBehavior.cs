@@ -6,7 +6,7 @@ namespace Vector_Editor
 {
     interface IToolBehavior
     {
-        void Enter(List<TLstPointer<TPoint>> ShapeList);
+        void Enter(TLstShape<TShape> ShapeList);
         void Exit();
         void MouseDown(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list);
         void MouseMove(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list);
