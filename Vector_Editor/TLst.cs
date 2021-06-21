@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Vector_Editor
 {
@@ -15,37 +10,34 @@ namespace Vector_Editor
         //Добавить TPosition
 
         //public List<TPoint> data = new List<TPoint>();
-        public const int DataSize = 100;
+        public const int SIZE = 100;
         public static TPoint[] Data;
-        private static int FirstEinList;
-        private static int LastEinList;
-        private static int CurrentPoint;
+        private static int _firstEinList;
+        private static int _currentPoint;
 
 
         static TLst()
         {
-            CurrentPoint = 1;
-            Data = new TPoint[DataSize];
-            FirstEinList = 1;
-            LastEinList = DataSize;
+            _currentPoint = 1;
+            Data = new TPoint[SIZE];
+            _firstEinList = 1;
             ResetAllPoints();
         }
 
         public static void ResetAllPoints()
         {
-            CurrentPoint = 1;
-            TPoint point = new TPoint();
-            point.X = 0; point.Y = 0;
-            for (int i = 0; i < DataSize; i++)
+            _currentPoint = 1;
+            TPoint point = new TPoint(0,0);
+            for (int i = 0; i < SIZE; i++)
             {
                 Data[i] = point;
-                Data[i].Active = false;
+                //Data[i].Active = false;
             }
         }
 
         public static int GetCurrentPoint()
         {
-            return CurrentPoint;
+            return _currentPoint;
         }
 
         public static string GetStringPoint(int DataItem)
@@ -61,9 +53,9 @@ namespace Vector_Editor
 
         public static void AddPoint(TPoint point)
         {
-            point.Active = true;
-            Data[CurrentPoint] = point;
-            CurrentPoint++;
+            //point.Active = true;
+            Data[_currentPoint] = point;
+            _currentPoint++;
         }
 
         public static bool EqualsPoints(TPoint point)
@@ -78,19 +70,14 @@ namespace Vector_Editor
             }
             return false;
         }
-
-        public static void InstancePoint(int position)
-        {
-
-        }
     
         public static void DeletePoint(int position)
         {
-            if (position < FirstEinList || position > DataSize)
+            if (position < _firstEinList || position > SIZE)
                 throw new IndexOutOfRangeException("Invalid Position"); ;
 
-            CurrentPoint--;
-            for (int i = position; i < CurrentPoint; i++)
+            _currentPoint--;
+            for (int i = position; i < _currentPoint; i++)
             {
                 Data[i] = Data[i + 1];
             }

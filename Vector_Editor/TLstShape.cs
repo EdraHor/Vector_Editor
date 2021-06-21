@@ -1,36 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Vector_Editor
-{                      //без второго списка. Дать точкам bool isInShape и индексы;
-                       //мы перебираем точки с isInShape(0), если попадается isInShape(1) начинаем рисовать
-                       //фигуру
-
-    //Создать список с индексами на фигуры другого списка. Рисуем все точки, соединяем линиями по списку индексов.
-    //Если нужно выбрать фигуру из ее центра проходимся списку фигур и меняем все ее координаты
-    //
-
-    //Сделать 2 независимых списка. Один содержит точки, другой фигуры со списками точек. Для фигур сделать:
-    // * отдельные режимы удаления и перемещения? Слишком сильно засоряется код. Проще реализовать.
-    // * проходится по обоим спискам подряд? Проще рисовать. Нагромаждаются инструменты. 
-
-
+{                   
     public class TLstShape<T> //содержит фигуры 
     {
-        public Node<TShape> FirstItem { get; private set; } //Первый элемент
-        public Node<TShape> LastItem { get; private set; }//Последний элемент
+        public TNode<TShape> FirstItem { get; private set; } //Первый элемент
+        public TNode<TShape> LastItem { get; private set; }//Последний элемент
         public int Count { get; private set; } //Количество элементов списка
-        public bool drawLines = false;
-        public bool smartPoint = false;
-        public bool transformAndRotate = false;
-        public int ShapeSides = 3;
+        public int ShapeSides = 4;
 
         public void Add(TShape data) //Добавить в конец списка
         {
-            Node<TShape> node = new Node<TShape>(data);
+            TNode<TShape> node = new TNode<TShape>(data);
 
             if (LastItem == null)
                 FirstItem = node;
@@ -42,7 +23,7 @@ namespace Vector_Editor
         }
         public void AddToFirst(TShape data) //Добавить в начало списка
         {
-            Node<TShape> node = new Node<TShape>(data);
+            TNode<TShape> node = new TNode<TShape>(data);
             node.Next = FirstItem;
             FirstItem = node;
             if (Count == 0)
@@ -50,12 +31,12 @@ namespace Vector_Editor
             Count++;
         }
 
-        public void InstanceItem(int position, TShape data)//Вставляет точку по позиции
+        public void InstanceItem(int position, TShape data)//Вставляет фигуру по позиции
         {
             if (position <= 0 || position > Count) new Exception("Позиция за границами списка");
 
-            Node<TShape> current = new Node<TShape>(data);
-            Node<TShape> previous = GetNode(position - 1);
+            TNode<TShape> current = new TNode<TShape>(data);
+            TNode<TShape> previous = GetNode(position - 1);
 
             current.Next = GetNode(position);
             if (position > 0)
@@ -68,10 +49,10 @@ namespace Vector_Editor
 
         public bool EqualPoints(TPoint data, int R)
         {
-            Node<TShape> current = FirstItem;
+            TNode<TShape> current = FirstItem;
             while (current != null) //Перебираем все фигуры
             {
-                var Shape = current.Data.Shape; //Запоминаем фигуру
+                var Shape = current.Data.Item; //Запоминаем фигуру
                 for (int i = 0; i < Shape.Count; i++) //Проходим по всем точкам в фигуре
                 {
                     if (Math.Abs(data.X - Shape.GetItem(i).X) < R && Math.Abs(data.Y - Shape.GetItem(i).Y) < R)
@@ -79,12 +60,13 @@ namespace Vector_Editor
                 }
                 current = current.Next;
             }
+
             return false; //Проверка на близость точек
         }
 
         public int GetItemPosition(TShape data)
         {
-            Node<TShape> current = FirstItem;
+            TNode<TShape> current = FirstItem;
             int Position = 0;
             while (current != null)
             {
@@ -94,7 +76,7 @@ namespace Vector_Editor
             }
             new Exception("Элемент не найден!");
             return 0;
-        } //Возвращает номер точки в списке
+        } //Возвращает номер фигуры в списке
 
         public void Clear() //Очистка списка
         {
@@ -103,11 +85,11 @@ namespace Vector_Editor
             Count = 0;       //остальные элементы списка
         }
 
-        public TShape GetItem(int position) //возвращает объект точки
+        public TShape GetItem(int position) //возвращает объект фигуры
         {
             if (position <= Count)
             {
-                Node<TShape> current = FirstItem;
+                TNode<TShape> current = FirstItem;
                 for (int i = 0; i < position; i++)
                 {
                     current = current.Next;
@@ -120,11 +102,11 @@ namespace Vector_Editor
                 return FirstItem.Data;
             }
         }
-        public Node<TShape> GetNode(int position) //возвращает ячейку списка
+        public TNode<TShape> GetNode(int position) //возвращает ячейку списка
         {
             if (position <= Count)
             {
-                Node<TShape> current = FirstItem;
+                TNode<TShape> current = FirstItem;
                 for (int i = 1; i < position; i++)
                 {
                     current = current.Next;
@@ -137,16 +119,32 @@ namespace Vector_Editor
                 return null;
             }
         }
-        //public string GetStringPoint(int position)
-        //{
-        //    return "(" + position.ToString() + ") x: " + GetItem(position).x.ToString()
-        //    + "; y: " + GetItem(position).y.ToString();
-        //}
 
-        public bool Remove(int position) //Удаляет точку по позиции в списке
+        public void MovingSelected(TPoint MousePos) //Перемещение всех фигур в указанную точку
         {
-            Node<TShape> current = FirstItem;
-            Node<TShape> previous = null;
+            TPoint Diff, Move;
+
+            for (int i = 0; i < Count; i++)
+            {
+                var Shape = GetItem(i).Item;
+                if (GetItem(i).isSelect)
+                {
+                    //Разница между позицией мыши и каждым центром фигуры
+                    Diff = new TPoint(MousePos.X - Shape.GetCenterPoint().X, 
+                    MousePos.Y - Shape.GetCenterPoint().Y);
+                    //Возвращаем эту разницу ориентируясь на новое место
+                    Move = new TPoint(MousePos.X + Diff.X, MousePos.Y + Diff.Y);
+                    GetItem(i).Moving(Move);
+                }
+            }
+        }
+
+        //Console.WriteLine(Move.GetString());
+
+        public bool Remove(int position) //Удаляет фигуру по позиции в списке
+        {
+            TNode<TShape> current = FirstItem;
+            TNode<TShape> previous = null;
 
             while (current != null)
             {

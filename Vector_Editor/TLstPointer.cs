@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Vector_Editor
 {
     public class TLstPointer<T>
     {
-        public Node<TPoint> FirstItem { get; private set; } //Первый элемент
-        public Node<TPoint> LastItem { get; private set; }//Последний элемент
+        public TNode<TPoint> FirstItem { get; private set; } //Первый элемент
+        public TNode<TPoint> LastItem { get; private set; }//Последний элемент
         public int Count { get; private set; } //Количество элементов списка
-        public bool drawLines = false;
-        public bool smartPoint = false;
-        public bool transformAndRotate = false;
-        public int ShapeSides = 3;
+        public bool isDrawLines = false;
+        public bool isMiddlePoint = false;
+        public bool isTransformAndRotate = false;
+        public bool isInFirst = false;
 
         public void Add(TPoint data) //Добавить в конец списка
         {
-            Node<TPoint> node = new Node<TPoint>(data);
+            TNode<TPoint> node = new TNode<TPoint>(data);
 
             if (LastItem == null)
                 FirstItem = node;
@@ -30,7 +27,7 @@ namespace Vector_Editor
         }
         public void AddToFirst(TPoint data) //Добавить в начало списка
         {
-            Node<TPoint> node = new Node<TPoint>(data);
+            TNode<TPoint> node = new TNode<TPoint>(data);
             node.Next = FirstItem;
             FirstItem = node;
             if (Count == 0)
@@ -38,62 +35,6 @@ namespace Vector_Editor
             Count++;
         }
 
-        public void RemoveItem(TPoint data) //Удаляет первую попавшеюся точку
-        {
-            Node<TPoint> current = FirstItem;
-            Node<TPoint> previous = null;
-
-            while (current != null)
-            {
-                if (current.Data.Equals(data))
-                {
-                    if (previous != null)
-                    {
-                        previous.Next = current.Next;
-
-                        if (current.Next == null)
-                            LastItem = previous;
-                    }
-                    else
-                    {
-                        FirstItem = FirstItem.Next;
-                        if (FirstItem == null)
-                            LastItem = null;
-                    }
-                    Count--;
-                }
-                previous = current;
-                current = current.Next;
-            }
-        }
-        public void RemoveItem(int position) //Удаляет точку по позиции
-        {
-            Node<TPoint> current = FirstItem;
-            Node<TPoint> previous = null;
-
-            while (current != null)
-            {
-                if (current.Data.Equals(GetItem(position)))
-                {
-                    if (previous != null)
-                    {
-                        previous.Next = current.Next;
-
-                        if (current.Next == null)
-                            LastItem = previous;
-                    }
-                    else
-                    {
-                        FirstItem = FirstItem.Next;
-                        if (FirstItem == null)
-                            LastItem = null;
-                    }
-                    Count--;
-                }
-                previous = current;
-                current = current.Next;
-            }
-        }
 
         public object this[int i] //Позвляет использовать квадатные скобки как с 
         {                         //обычным массивом или списком
@@ -103,10 +44,11 @@ namespace Vector_Editor
 
         public void InstanceItem(int position, TPoint data)//Вставляет точку по позиции
         {
-            if (position <= 0 || position > Count) new Exception("Позиция за границами списка");
+            position++;
+            if (position <= 0 || position > Count) return;
 
-            Node<TPoint> current = new Node<TPoint>(data);
-            Node<TPoint> previous = GetNode(position - 1);
+            TNode<TPoint> current = new TNode<TPoint>(data);
+            TNode<TPoint> previous = GetNode(position - 1);
 
             current.Next = GetNode(position);
             if (position > 0)
@@ -119,7 +61,7 @@ namespace Vector_Editor
 
         public TPoint PreviousItem(TPoint point) //возвращает объект точки
         {
-            Node<TPoint> current = FirstItem;
+            TNode<TPoint> current = FirstItem;
             bool isFind = false;
             while (current!=LastItem && !isFind)
             {
@@ -132,11 +74,11 @@ namespace Vector_Editor
             }
             return new TPoint(4040, 4040);
         } 
-        public Node<TPoint> PreviousNode(int position)//возвращает ячейку списка
+        public TNode<TPoint> PreviousNode(int position)//возвращает ячейку списка
         {
             if (position <= Count)
             {
-                Node<TPoint> current = FirstItem;
+                TNode<TPoint> current = FirstItem;
                 for (int i = 1; i < position - 1; i++) //Перебираем до position-1 
                 {
                     current = current.Next;
@@ -152,7 +94,7 @@ namespace Vector_Editor
 
         public bool EqualPoints(TPoint data, int R) //Проверка конкретной точки на близость в 
         {                                           //радиусе R с другими точками в списке
-            Node<TPoint> current = FirstItem;
+            TNode<TPoint> current = FirstItem;
             while (current != null)
             {
                 if (Math.Abs(data.X - current.Data.X) < R && Math.Abs(data.Y - current.Data.Y) < R) 
@@ -164,20 +106,20 @@ namespace Vector_Editor
         public bool EqualPoints(System.Windows.Forms.MouseEventArgs e, int R) //Проверка по позиции мыши
                                                                               //точек на близость 
         {                          
-            Node<TPoint> current = FirstItem;
+            TNode<TPoint> current = FirstItem;
             while (current != null)
             {
-                if (Math.Abs(e.X - current.Data.X) < 10 &&
-                    Math.Abs(e.Y - current.Data.Y) < 10)
+                if (Math.Abs(e.X - current.Data.X) < R &&
+                    Math.Abs(e.Y - current.Data.Y) < R)
                     return true;
                 current = current.Next;
             }
             return false; //Проверка на близость точек
         }
 
-        public int GetItemPosition(TPoint data)
+        public int GetPointPosition(TPoint data)
         {
-            Node<TPoint> current = FirstItem;
+            TNode<TPoint> current = FirstItem;
             int Position = 0;
             while (current!=null)
             {
@@ -188,6 +130,20 @@ namespace Vector_Editor
             new Exception("Элемент не найден!");
             return 0;
         } //Возвращает номер точки в списке
+        public bool IsFirst(TPoint data, int R) //Возвращает true если это первый элемент
+        {
+            TNode<TPoint> current = FirstItem;
+            while (current != null)
+            {
+                if (Math.Abs(data.X - current.Data.X) < R && Math.Abs(data.Y - current.Data.Y) < R)
+                {
+                    if (current.Data == FirstItem.Data)
+                        return true;
+                }
+                current = current.Next;
+            }
+            return false; //Проверка на близость точек
+        }
 
         public void Clear() //Очистка списка
         {
@@ -200,7 +156,7 @@ namespace Vector_Editor
         {
             if (position <= Count)
             {
-                Node<TPoint> current = FirstItem;
+                TNode<TPoint> current = FirstItem;
                 for (int i = 0; i < position; i++)
                 {
                     current = current.Next;
@@ -213,11 +169,11 @@ namespace Vector_Editor
                 return FirstItem.Data;
             }
         } 
-        public Node<TPoint> GetNode(int position) //возвращает ячейку списка
+        public TNode<TPoint> GetNode(int position) //возвращает ячейку списка
         {
             if (position <= Count)
             {
-                Node<TPoint> current = FirstItem;
+                TNode<TPoint> current = FirstItem;
                 for (int i = 1; i < position; i++)
                 {
                     current = current.Next;
@@ -240,7 +196,7 @@ namespace Vector_Editor
         {
             if (position <= Count)
             {
-                Node<TPoint> current = FirstItem;
+                TNode<TPoint> current = FirstItem;
                 for (int i = 0; i < position; i++)
                 {
                     current = current.Next;
@@ -252,8 +208,8 @@ namespace Vector_Editor
 
         public bool Remove(int position) //Удаляет точку по позиции в списке
         {
-            Node<TPoint> current = FirstItem;
-            Node<TPoint> previous = null;
+            TNode<TPoint> current = FirstItem;
+            TNode<TPoint> previous = null;
 
             while (current != null)
             {
@@ -263,10 +219,10 @@ namespace Vector_Editor
                     if (previous != null)
                     {
                         previous.Next = current.Next;
-                        if (current.Next == null)
+                        if (current.Next == null) //Если удаляемый элемент последний в списке
                             LastItem = previous;
                     }
-                    else
+                    else //Если удаляемый элемент первый в списке
                     {
                         FirstItem = FirstItem.Next;
 
@@ -308,41 +264,32 @@ namespace Vector_Editor
         {
             return (int)Math.Sqrt(Math.Pow(point.X - GetItem(pos).X, 2) + Math.Pow(point.Y - GetItem(pos).Y, 2));
         }
-
-        public void RotateAt(int xO, int yO, float angle)
+        public int GetDistanceToPoint(int pos1, int pos2) //Возвращает растояние до точки
         {
-            for (int i = 0; i < Count; i++)
-            {
-                float angleRad = (float)(angle * Math.PI / 180);
-                int x = GetItem(i).X;
-                int y = GetItem(i).Y;
-                
-                GetItem(i).X = xO+(int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad));
-                GetItem(i).Y = yO+(int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad));
-            }
+            return (int)Math.Sqrt(Math.Pow(GetItem(pos1).X - GetItem(pos2).X, 2) + 
+                                  Math.Pow(GetItem(pos1).Y - GetItem(pos2).Y, 2));
         }
-        public void RotateAt(TPoint point, double angle)
+
+        public void RotateAt(TPoint point, double angle)//поворот всех точек относительно центра
         {
             float angleRad = (float)(angle * Math.PI / 180);
             for (int i = 0; i < Count; i++)
             {
                 int x = GetItem(i).X; int y = GetItem(i).Y;
                 int xO = point.X; int yO = point.Y;
-
-                GetItem(i).X = xO+(int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad));
-                GetItem(i).Y = yO+(int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad));
+                SetItem(i, new TPoint(xO + (int)Math.Round((x - xO) * Math.Cos(angleRad) - (y - yO) * Math.Sin(angleRad)),
+                    yO + (int)Math.Round((x - xO) * Math.Sin(angleRad) + (y - yO) * Math.Cos(angleRad))));
             }
         }
-        public void TransformAt(int xt, int yt)
+        public void TransformAt(int xt, int yt) // Перемещение всех точек на указаннное растояние
         {
             for (int i = 0; i < Count; i++)
             {
-                GetItem(i).X += xt;
-                GetItem(i).Y += yt;
+                SetItem(i, new TPoint(GetItem(i).X + xt, GetItem(i).Y += yt));
             }
         }
 
-        public TPoint GetCenterPoint()
+        public TPoint GetCenterPoint() //Возвращает центральную точку точек
         {
             double SumX = 0;
             double SumY = 0;
@@ -352,6 +299,20 @@ namespace Vector_Editor
                 SumY += GetItem(i).Y;
             }
             return new TPoint(SumX / Count, SumY / Count);
+        }
+
+        public Vector2 FindNearestPointOnLine(Vector2 origin, Vector2 end, Vector2 point) //ближайшая к данной точка на
+        {                                                                                  //отрезке
+            Vector2 heading = Vector2.Normalize(end - origin); //расчитываем направление прямой (от -1 до 1)
+            float magnitude = Vector2.Distance(end, origin); // расчитываем длину прямой
+
+            Vector2 diff = point - origin; //расчет растония до точки
+
+            float dotP = Vector2.Dot(diff, heading); //скалярное произведение растояния до точки и направления прямой
+            if (dotP < 0) dotP = 0; //отсекание отрицательного скаляра
+            else if (dotP > magnitude) dotP = magnitude; //поиск минимального растояния
+
+            return origin + heading * dotP;
         }
     }
 

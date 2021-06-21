@@ -34,17 +34,17 @@ namespace Vector_Editor
             this.InputAngle = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.InputPosY = new System.Windows.Forms.NumericUpDown();
+            this.InputPosX = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.ButtonAccept = new System.Windows.Forms.Button();
-            this.InputPosX = new System.Windows.Forms.NumericUpDown();
-            this.InputPosY = new System.Windows.Forms.NumericUpDown();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.InputPosX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.InputPosY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.InputPosX)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -100,6 +100,25 @@ namespace Vector_Editor
             this.panel2.Size = new System.Drawing.Size(234, 94);
             this.panel2.TabIndex = 3;
             // 
+            // InputPosY
+            // 
+            this.InputPosY.Location = new System.Drawing.Point(136, 59);
+            this.InputPosY.Name = "InputPosY";
+            this.InputPosY.Size = new System.Drawing.Size(57, 22);
+            this.InputPosY.TabIndex = 7;
+            // 
+            // InputPosX
+            // 
+            this.InputPosX.Location = new System.Drawing.Point(42, 59);
+            this.InputPosX.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.InputPosX.Name = "InputPosX";
+            this.InputPosX.Size = new System.Drawing.Size(57, 22);
+            this.InputPosX.TabIndex = 4;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -147,20 +166,6 @@ namespace Vector_Editor
             this.ButtonAccept.UseVisualStyleBackColor = true;
             this.ButtonAccept.Click += new System.EventHandler(this.ButtonAccept_Click);
             // 
-            // InputPosX
-            // 
-            this.InputPosX.Location = new System.Drawing.Point(42, 59);
-            this.InputPosX.Name = "InputPosX";
-            this.InputPosX.Size = new System.Drawing.Size(57, 22);
-            this.InputPosX.TabIndex = 4;
-            // 
-            // InputPosY
-            // 
-            this.InputPosY.Location = new System.Drawing.Point(136, 59);
-            this.InputPosY.Name = "InputPosY";
-            this.InputPosY.Size = new System.Drawing.Size(57, 22);
-            this.InputPosY.TabIndex = 7;
-            // 
             // Form_Dialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -176,13 +181,13 @@ namespace Vector_Editor
             this.Opacity = 0.98D;
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form_Dialog";
+            this.Text = "Работа с точками";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.InputPosX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.InputPosY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.InputPosX)).EndInit();
             this.ResumeLayout(false);
 
         }

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Vector_Editor
@@ -18,12 +14,7 @@ namespace Vector_Editor
         }
         TLstShape<TShape> shapeList; // Список фигур
         TShape Shape; // Фигура
-        bool shapeStart = false; // Режим создания фигур
-
-        Pen pen = new Pen(Color.Black, 2);
-        Font drawFont = new Font("Arial", 12);
-        SolidBrush drawBrush = new SolidBrush(Color.Black);
-        int margin = 4;
+        private bool shapeCreating = false; // Режим создания фигур
 
         public void Exit()
         {
@@ -36,19 +27,19 @@ namespace Vector_Editor
 
             if (!shapeList.EqualPoints(point, 10)) //Проверка наличия точек в месте клика
             {
-                if (!shapeStart) //Начинает создавать фигуру
+                if (!shapeCreating) //Начинает создавать фигуру
                 {
                     Shape = new TShape();
                     shapeList.Add(Shape);
-                    shapeStart = true;
+                    shapeCreating = true;
                     Shape.AddPoint(point);
                 }
-                else
+                else //добавляем новые точки в фигуре
                 {
                     Shape.AddPoint(point);
-                    if (Shape.Shape.Count == list.ShapeSides) //Когда мы создаем последнюю точку
+                    if (Shape.Item.Count == shapeList.ShapeSides) //Когда мы создаем последнюю точку
                     {
-                        shapeStart = false; //Завершаем создание фигуры
+                        shapeCreating = false; //Завершаем создание фигуры
                     }
                 }
             }

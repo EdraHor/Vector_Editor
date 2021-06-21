@@ -1,69 +1,90 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace Vector_Editor
 {
     public class TShape
     {
-        public TLstPointer<TPoint> Shape;
-        public int Count { get => Shape.Count; }
+        public TLstPointer<TPoint> Item; //Список точек фигуры
+        public int Count { get => Item.Count; } //Количество точек фигуры
+        public bool isSelect; //Выделена ли фигура
 
-        public TShape()
+        public TShape() //Конструктор инициализирует список точек фигуры.
         {
-            Shape = new TLstPointer<TPoint>();
+            Item = new TLstPointer<TPoint>();
         }
-
-        public void AddPoint(TPoint _point)
+        public TShape(TLstPointer<TPoint> ShapePoints) //Конструктор создает фигуру из списка 
         {
-            Shape.Add(_point);
-        }
-        public void SetPoint(int position, TPoint _point)
-        {
-            Shape.SetItem(position, _point);
-        }
-        public void RemovePoint(int position)
-        {
-            Shape.Remove(position);
-        }
-        public Point[] GetArray()
-        {
-            Point[] Array = new Point[Shape.Count];
-
-            for (int i = 0; i < Shape.Count; i++)
+            Item = new TLstPointer<TPoint>();
+            for (int i = 0; i < ShapePoints.Count; i++)
             {
-                Array[i] = Shape.GetItem(i).Point;
+                Item.Add(ShapePoints.GetItem(i));
+            }
+        }
+
+        public void AddPoint(TPoint _point) //Добавляет фигуру в конец
+        {
+            Item.Add(_point);
+        }
+        public void SetPoint(int position, TPoint _point) //Устанавливает значение
+        {
+            Item.SetItem(position, _point);
+        }
+        public void RemovePoint(int position) //удаляет фигуру
+        {
+            Item.Remove(position);
+        }
+        public Point[] GetArray() //Преобразуем список TPoint в массив Point и возвращает его
+        {
+            Point[] Array = new Point[Item.Count];
+
+            for (int i = 0; i < Item.Count; i++)
+            {
+                Array[i] = Item.GetItem(i)._point;
             }
             return Array;
         }
 
         public TPoint GetCenterPoint()
         {
-            var Count = Shape.Count;
+            var Count = Item.Count;
             double SumX = 0;
             double SumY = 0;
             for (int i = 0; i < Count; i++)
             {
-                SumX += Shape.GetItem(i).X;
-                SumY += Shape.GetItem(i).Y;
+                SumX += Item.GetItem(i).X;
+                SumY += Item.GetItem(i).Y;
             }
             return new TPoint(SumX / Count, SumY / Count);
         }
 
-        public void Moving(TPoint MovePos)
+        public void Moving(TPoint MovePos) //Перемещает фигуру в указанную точку
         {
             TPoint Diff,Move,Center;
             Center = GetCenterPoint();
             for (int i = 0; i < Count; i++)
             {
                 //Разница между каждой точкой и центром фигуры
-                Diff = new TPoint(Center.X - Shape.GetItem(i).X, Center.Y - Shape.GetItem(i).Y);
+                Diff = new TPoint(Center.X - Item.GetItem(i).X, Center.Y - Item.GetItem(i).Y);
                 //Возвращаем эту разницу ориентируясь на новое место
                 Move = new TPoint(MovePos.X - Diff.X, MovePos.Y - Diff.Y);
-                Shape.SetItem(i, Move);
+                Item.SetItem(i, Move);
+            }
+        }
+
+        public void Select()
+        {
+            isSelect = true;
+            for (int i = 0; i < Count; i++)
+            {
+                Item.GetItem(i).Select();
+            }
+        }
+        public void Deselect()
+        {
+            isSelect = false;
+            for (int i = 0; i < Count; i++)
+            {
+                Item.GetItem(i).Deselect();
             }
         }
     }
