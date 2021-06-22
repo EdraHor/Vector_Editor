@@ -8,7 +8,7 @@ namespace Vector_Editor
     {
         private bool _isFocusedPoint = false;
         private bool _isFocusedShape = false;
-        private int _deletePos;
+        private int _tempDeletePos;
         private TPoint _mousePos; //Позиция мыши, меняется каждый MouseMove
 
         TLstShape<TShape> shapeList; // Список фигур
@@ -31,7 +31,7 @@ namespace Vector_Editor
                 if (Math.Abs(e.X - list.GetItem(i).X) < 10 &&
                     Math.Abs(e.Y - list.GetItem(i).Y) < 10)
                 {
-                    _deletePos = i;
+                    _tempDeletePos = i;
                     _isFocusedPoint = true;
                 }
             }
@@ -46,7 +46,7 @@ namespace Vector_Editor
                     {
                         Shape.Item.GetItem(j).Select();
                     }
-                    _deletePos = i;
+                    _tempDeletePos = i;
                     _isFocusedShape = true; //Выбрана фигура
                 }
             }
@@ -88,8 +88,8 @@ namespace Vector_Editor
 
         public void MouseUp(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
         {
-            if (_isFocusedPoint) list.Remove(_deletePos);
-            else if (_isFocusedShape) shapeList.Remove(_deletePos);
+            if (_isFocusedPoint) list.Remove(_tempDeletePos);
+            else if (_isFocusedShape) shapeList.Remove(_tempDeletePos);
 
             _isFocusedPoint = false;
             _isFocusedShape = false;

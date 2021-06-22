@@ -12,7 +12,7 @@ namespace Vector_Editor
 
         public Color Color { get; private set; }
 
-        public TPoint() { Color = Color.Black; }
+        public TPoint() { Color = Color.Black; } //Конструкторы под разные типы входящих данных
         public TPoint(int X, int Y) 
         {
             _point.X = X;
@@ -35,7 +35,7 @@ namespace Vector_Editor
         {
             _point.X = (int)vector.X;
             _point.Y = (int)vector.Y;
-            Color = Color.Black;
+            Color = Color.Black;             //end
         }
 
         public void SetPoint(int X, int Y)//Установка координат точки

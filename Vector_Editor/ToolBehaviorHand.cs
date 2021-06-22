@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Numerics;
 
 namespace Vector_Editor
 {
     class ToolBehaviorHand : IToolBehavior
     {
-        bool isDownOnPoint;
-        bool isDownOnShape;
-        int selectedPoint = 0;
-        int selectedShape = 0;
+        private bool isDownOnPoint; //мы нажали по точке
+        private bool isDownOnShape; //мы нажали по фигуре
+        private int _tempSelectedPoint = 0;
+        private int _tempSelectedShape = 0;
         TLstShape<TShape> shapeList; // Список фигур
         private TPoint MousePos;
 
         public void Enter(TLstShape<TShape> ShapeList)
         {
             Console.WriteLine("Enter Hand behavior");
-            shapeList = ShapeList;
+            shapeList = ShapeList; //Инициализируем список фигур
         }
 
 
@@ -34,7 +33,7 @@ namespace Vector_Editor
                     Math.Abs(e.Y - list.GetItem(i).Y) < 10)
                 {
                     list.GetItem(i).Select();
-                    selectedPoint = i;
+                    _tempSelectedPoint = i;
                     isDownOnPoint = true; //Выбрана точка
                     Cursor.Current = Cursors.Hand;
                 }
@@ -49,8 +48,8 @@ namespace Vector_Editor
                         Math.Abs(e.Y - Shape.Item.GetItem(j).Y) < 10)   //фигуры
                     {
                         Shape.Item.GetItem(i).Select();
-                        selectedPoint = j;
-                        selectedShape = i;
+                        _tempSelectedPoint = j;
+                        _tempSelectedShape = i;
                         isDownOnPoint = true;
                         isDownOnShape = true;
                         if (Control.ModifierKeys == Keys.Control) //если зажат Ctrl
@@ -64,7 +63,7 @@ namespace Vector_Editor
                     {
                         Shape.Item.GetItem(j).Select();
 
-                        selectedShape = i;
+                        _tempSelectedShape = i;
                         isDownOnShape = true; //Выбрана фигура
                         Cursor.Current = Cursors.Hand;
                         if (Control.ModifierKeys == Keys.Control) //если зажат Ctrl выделяется текущая фигура
@@ -84,14 +83,14 @@ namespace Vector_Editor
             //                Перемещение                    //
             if (isDownOnPoint && !isDownOnShape) //Выбрана точка
             {
-                list.GetItem(selectedPoint).SetPoint(e.X, e.Y); //Перемещаем выбранную точку
+                list.GetItem(_tempSelectedPoint).SetPoint(e.X, e.Y); //Перемещаем выбранную точку
                 Cursor.Current = Cursors.Hand;
             }
             else if (isDownOnShape && !isDownOnPoint) //Выбрана фигура
             {
                 for (int i = 0; i < shapeList.Count; i++)
                 {
-                    shapeList.GetItem(selectedShape).Moving(MousePos);
+                    shapeList.GetItem(_tempSelectedShape).Moving(MousePos);
 
                     if (shapeList.GetItem(i).isSelect) shapeList.MovingSelected(MousePos);
                 }
@@ -100,7 +99,7 @@ namespace Vector_Editor
             }
             else if (isDownOnShape && isDownOnPoint) //Выбрана точка внутри фигуры
             {
-                shapeList.GetItem(selectedShape).Item.SetItem(selectedPoint, MousePos); //Перемещаем выбранную точку
+                shapeList.GetItem(_tempSelectedShape).Item.SetItem(_tempSelectedPoint, MousePos); //Перемещаем выбранную точку
                 Cursor.Current = Cursors.Hand;
             }
             //                Подсветка точек и фигур при наведении          //

@@ -71,7 +71,7 @@ namespace Vector_Editor
             }
         }
 
-        public void Select()
+        public void Select() //выделяет фигуру и все ее точки
         {
             isSelect = true;
             for (int i = 0; i < Count; i++)
@@ -79,7 +79,7 @@ namespace Vector_Editor
                 Item.GetItem(i).Select();
             }
         }
-        public void Deselect()
+        public void Deselect() //снимает выделение с фигуруры и всех ее точек
         {
             isSelect = false;
             for (int i = 0; i < Count; i++)

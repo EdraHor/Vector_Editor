@@ -62,7 +62,7 @@ namespace Vector_Editor
 
         public void MouseMove(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
         {
-            if (list.isMiddlePoint)
+            if (list.isMiddlePoint)//Если включен режим рисования точек между точками
             {
                 TPoint mousePos = new TPoint(e.X, e.Y); //Запоминаем позицию мыши
                 if (list.Count > 1)

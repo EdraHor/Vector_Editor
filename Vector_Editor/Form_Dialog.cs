@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Vector_Editor
@@ -15,8 +8,8 @@ namespace Vector_Editor
         public Form_Dialog(TLstPointer<TPoint> list, Form1 form)
         {
             InitializeComponent();
-            this.list = list;
-            MainForm = form;
+            this.list = list; //Инициализируем список точек
+            MainForm = form; //Инициплизируем главную форму
         }
 
         public TLstPointer<TPoint> list;
@@ -28,9 +21,10 @@ namespace Vector_Editor
             int posX = Convert.ToInt32(InputPosX.Text);
             int posY = Convert.ToInt32(InputPosY.Text);
 
-            list.RotateAt(list.GetCenterPoint(), angle);
-            list.TransformAt(posX, -posY);
-            MainForm.UpdateImage();
+            list.RotateAt(list.GetCenterPoint(), angle); //Вращаем
+            list.TransformAt(posX, -posY); //Перемещаем
+            MainForm.UpdateImage(); //Обновляем форму
         }
     }
 }
+
