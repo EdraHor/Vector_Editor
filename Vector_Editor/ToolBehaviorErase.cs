@@ -12,11 +12,13 @@ namespace Vector_Editor
         private TPoint _mousePos; //Позиция мыши, меняется каждый MouseMove
 
         TLstShape<TShape> shapeList; // Список фигур
+        TLstPointer<TPoint> _list;
 
-        public void Enter(TLstShape<TShape> ShapeList)
+        public void Enter(TLstShape<TShape> ShapeList, TLstPointer<TPoint> list)
         {
             Console.WriteLine("Enter Erase behavior");
             shapeList = ShapeList;
+            _list = list;
         }
 
         public void Exit()
@@ -24,12 +26,12 @@ namespace Vector_Editor
             Console.WriteLine("Exit Erase behavior");
         }
 
-        public void MouseDown(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
+        public void MouseDown(Graphics graphics, MouseEventArgs e)
         {
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < _list.Count; i++)
             {
-                if (Math.Abs(e.X - list.GetItem(i).X) < 10 &&
-                    Math.Abs(e.Y - list.GetItem(i).Y) < 10)
+                if (Math.Abs(e.X - _list.GetItem(i).X) < 10 &&
+                    Math.Abs(e.Y - _list.GetItem(i).Y) < 10)
                 {
                     _tempDeletePos = i;
                     _isFocusedPoint = true;
@@ -52,17 +54,17 @@ namespace Vector_Editor
             }
         }
 
-        public void MouseMove(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
+        public void MouseMove(Graphics graphics, MouseEventArgs e)
         {
             _mousePos = new TPoint(e.X, e.Y); //Сохранение позиции мыши
-            for (int i = 0; i < list.Count; i++) //Выделение точки при наведении
+            for (int i = 0; i < _list.Count; i++) //Выделение точки при наведении
             {
-                if (Math.Abs(e.X - list.GetItem(i).X) < 10 &&
-                    Math.Abs(e.Y - list.GetItem(i).Y) < 10)
+                if (Math.Abs(e.X - _list.GetItem(i).X) < 10 &&
+                    Math.Abs(e.Y - _list.GetItem(i).Y) < 10)
                 {
-                    list.GetItem(i).Select();
+                    _list.GetItem(i).Select();
                 }
-                else list.GetItem(i).Deselect();
+                else _list.GetItem(i).Deselect();
             }
 
             for (int i = 0; i < shapeList.Count; i++) //Перебираем фигуры
@@ -86,16 +88,16 @@ namespace Vector_Editor
             }
         }
 
-        public void MouseUp(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
+        public void MouseUp(Graphics graphics, MouseEventArgs e)
         {
-            if (_isFocusedPoint) list.Remove(_tempDeletePos);
+            if (_isFocusedPoint) _list.Remove(_tempDeletePos);
             else if (_isFocusedShape) shapeList.Remove(_tempDeletePos);
 
             _isFocusedPoint = false;
             _isFocusedShape = false;
         }
 
-        public void Paint(PaintEventArgs e, TLstPointer<TPoint> list)
+        public void Paint(PaintEventArgs e)
         {
             for (int i = 0; i < shapeList.Count; i++) //При наведении отрисовывается квадрат к центре фигуры
             {

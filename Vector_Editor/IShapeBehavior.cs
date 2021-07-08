@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Vector_Editor
 {
-    interface IToolBehavior
+    interface IShapeBehavior
     {
         void Enter(TLstShape<TShape> ShapeList, TLstPointer<TPoint> list);
         void Exit();

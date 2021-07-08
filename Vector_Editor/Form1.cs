@@ -16,8 +16,9 @@ namespace Vector_Editor
             _list = new TLstPointer<TPoint>();
             _shapeList = new TLstShape<TShape>();
             SetBehaviorByDefault();
+            this.MouseWheel += new MouseEventHandler(pictureBox1_MouseWheel);
         }
-        #region Настройки пера и кисти для отрисовки
+        #region Настройки перья и кисти для отрисовки
             private readonly Pen _pen = new Pen(Color.Black, 2);
             private readonly Font _drawFont = new Font("Arial", 12);
             private readonly SolidBrush _drawBrush = new SolidBrush(Color.Black);
@@ -78,28 +79,44 @@ namespace Vector_Editor
             pictureBox1.Invalidate();
         }
 
+        private Point prevLoc;
         #region Собития PictureBox
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            _сurrentBehavior.MouseMove(_g, e, _list); //Выполняем событие внутри инструмента
+            _сurrentBehavior.MouseMove(_g, e); //Выполняем событие внутри инструмента
             pictureBox1.Refresh(); //Перерисовываем область рисования
+
+            if (e.Button == MouseButtons.Middle)//Перемещаем весь PictureBox средней кнопкой мыши
+            {
+                Cursor.Current = Cursors.NoMove2D;
+                pictureBox1.Location = new Point(pictureBox1.Location.X + (e.X - prevLoc.X),
+                    pictureBox1.Location.Y + (e.Y - prevLoc.Y));
+            }
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            _сurrentBehavior.MouseDown(_g, e, _list); //Выполняем событие внутри инструмента
+            _сurrentBehavior.MouseDown(_g, e); //Выполняем событие внутри инструмента
             UpdateUI(); //Перерисовка listBox
+            prevLoc = e.Location; //Сохранение позиции мыши при нажатии
+        }
+
+        private void pictureBox1_MouseWheel(object sender, MouseEventArgs e) //Событие изменения колесика мыши
+        {
+            if (e.Delta > 0 || e.Delta < 0) //Масштабирование формы на значение прокрутки колесика мыши
+                pictureBox1.Size = new Size(pictureBox1.Width + e.Delta/10, pictureBox1.Height + e.Delta/10);
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            _сurrentBehavior.MouseUp(_g, e, _list); //Выполняем событие внутри инструмента
+            _сurrentBehavior.MouseUp(_g, e); //Выполняем событие внутри инструмента
             UpdateUI(); //Перерисовка listBox
         }
-
+        int PrevBez = 0;
         private void pictureBox1_Paint(object sender, PaintEventArgs e) //Отрисовка всех точек и фигур
         {
-            _сurrentBehavior.Paint(e, _list);
+            _сurrentBehavior.Paint(e);
+
 
             for (int i = 0; i < _shapeList.Count; i++)  //Перебираем фигуры
             {
@@ -114,11 +131,23 @@ namespace Vector_Editor
                         Shape.GetItem(j).X + _margin, Shape.GetItem(j).Y + _margin);
 
                     var Count = Shape.Count;
-                    e.Graphics.DrawLine(_pen, Shape.GetItem(j).X, Shape.GetItem(j).Y, //рисуем линии
-                        Shape.GetItem(j - 1).X, Shape.GetItem(j - 1).Y);
-                    if (Shape.Count > 2)
+                    if (!_shapeList.GetItem(i).isBezier)
+                    {
+                        e.Graphics.DrawLine(_pen, Shape.GetItem(j).X, Shape.GetItem(j).Y, //рисуем линии
+                            Shape.GetItem(j - 1).X, Shape.GetItem(j - 1).Y);
+                        //Дорисовываем последний отрезок линии
                         e.Graphics.DrawLine(_pen, Shape.GetItem(Count - 1).X, Shape.GetItem(Count - 1).Y, //рисуем линии
                         Shape.GetItem(0).X, Shape.GetItem(0).Y);
+                    }
+                    else if (Shape != null && (Count - 1) % 3 == 0)
+                    {
+                        PrevBez = Count;
+                        e.Graphics.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray());
+                    }
+                    else if (PrevBez != 0 && _shapeList.GetItem(i).isBezier)
+                    {
+                        e.Graphics.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray(PrevBez));
+                    }
                 }
             }
 
@@ -164,10 +193,6 @@ namespace Vector_Editor
             SetBahaviorErase();
         }
 
-        private void фигурыToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetBahaviorShape();
-        }
         #endregion
 
         #region Инициализация инструментов
@@ -190,7 +215,7 @@ namespace Vector_Editor
                     _сurrentBehavior.Exit();
 
                 this._сurrentBehavior = newBehavior; //Входим в новый инструмент
-                this._сurrentBehavior.Enter(_shapeList);
+                this._сurrentBehavior.Enter(_shapeList, _list);
             }
             else Console.WriteLine("Этот инструмент сейчас уже используется");
         }
@@ -331,6 +356,7 @@ namespace Vector_Editor
         #region Количество ребер фигур
         private void линияToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
             _shapeList.ShapeSides = 2; //Рисуем линию
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
             линияToolStripMenuItem.Checked = true; 
@@ -340,6 +366,7 @@ namespace Vector_Editor
 
         private void треугольникToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
             _shapeList.ShapeSides = 3; //Рисуем треугольник
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
             треугольникToolStripMenuItem.Checked = true;
@@ -349,6 +376,7 @@ namespace Vector_Editor
 
         private void четырехугольникToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
             _shapeList.ShapeSides = 4; //Рисуем четырехугольник
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
             четырехугольникToolStripMenuItem.Checked = true;

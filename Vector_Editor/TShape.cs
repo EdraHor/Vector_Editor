@@ -7,6 +7,7 @@ namespace Vector_Editor
         public TLstPointer<TPoint> Item; //Список точек фигуры
         public int Count { get => Item.Count; } //Количество точек фигуры
         public bool isSelect; //Выделена ли фигура
+        public bool isBezier = false;
 
         public TShape() //Конструктор инициализирует список точек фигуры.
         {
@@ -38,6 +39,17 @@ namespace Vector_Editor
             Point[] Array = new Point[Item.Count];
 
             for (int i = 0; i < Item.Count; i++)
+            {
+                Array[i] = Item.GetItem(i)._point;
+            }
+            return Array;
+        }
+
+        public Point[] GetArray(int upToPos) //Преобразуем список TPoint в массив Point и возвращает его
+        {
+            Point[] Array = new Point[upToPos];
+
+            for (int i = 0; i < upToPos; i++)
             {
                 Array[i] = Item.GetItem(i)._point;
             }

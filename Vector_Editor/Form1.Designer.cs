@@ -55,13 +55,18 @@ namespace Vector_Editor
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
+            this.menuStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.тестыToolStripMenuItem,
@@ -73,7 +78,8 @@ namespace Vector_Editor
             this.фигурыToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 28);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(569, 28);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -91,28 +97,28 @@ namespace Vector_Editor
             // тест1ToolStripMenuItem
             // 
             this.тест1ToolStripMenuItem.Name = "тест1ToolStripMenuItem";
-            this.тест1ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.тест1ToolStripMenuItem.Size = new System.Drawing.Size(150, 26);
             this.тест1ToolStripMenuItem.Text = "Тест #1";
             this.тест1ToolStripMenuItem.Click += new System.EventHandler(this.тест1ToolStripMenuItem_Click);
             // 
             // тест4ToolStripMenuItem
             // 
             this.тест4ToolStripMenuItem.Name = "тест4ToolStripMenuItem";
-            this.тест4ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.тест4ToolStripMenuItem.Size = new System.Drawing.Size(150, 26);
             this.тест4ToolStripMenuItem.Text = "Тест #4";
             this.тест4ToolStripMenuItem.Click += new System.EventHandler(this.тест4ToolStripMenuItem_Click);
             // 
             // тест7ToolStripMenuItem
             // 
             this.тест7ToolStripMenuItem.Name = "тест7ToolStripMenuItem";
-            this.тест7ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.тест7ToolStripMenuItem.Size = new System.Drawing.Size(150, 26);
             this.тест7ToolStripMenuItem.Text = "Тест #7";
             this.тест7ToolStripMenuItem.Click += new System.EventHandler(this.тест7ToolStripMenuItem_Click);
             // 
             // тест10ToolStripMenuItem
             // 
             this.тест10ToolStripMenuItem.Name = "тест10ToolStripMenuItem";
-            this.тест10ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.тест10ToolStripMenuItem.Size = new System.Drawing.Size(150, 26);
             this.тест10ToolStripMenuItem.Text = "Тест #10";
             this.тест10ToolStripMenuItem.Click += new System.EventHandler(this.тест10ToolStripMenuItem_Click);
             // 
@@ -192,43 +198,50 @@ namespace Vector_Editor
             this.фигурыToolStripMenuItem.Name = "фигурыToolStripMenuItem";
             this.фигурыToolStripMenuItem.Size = new System.Drawing.Size(76, 24);
             this.фигурыToolStripMenuItem.Text = "Фигуры";
-            this.фигурыToolStripMenuItem.Click += new System.EventHandler(this.фигурыToolStripMenuItem_Click);
             // 
             // линияToolStripMenuItem
             // 
             this.линияToolStripMenuItem.Name = "линияToolStripMenuItem";
-            this.линияToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
+            this.линияToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.линияToolStripMenuItem.Text = "Линия";
             this.линияToolStripMenuItem.Click += new System.EventHandler(this.линияToolStripMenuItem_Click);
             // 
             // треугольникToolStripMenuItem
             // 
             this.треугольникToolStripMenuItem.Name = "треугольникToolStripMenuItem";
-            this.треугольникToolStripMenuItem.Size = new System.Drawing.Size(214, 26);
-            this.треугольникToolStripMenuItem.Text = "Треугольник";
+            this.треугольникToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.треугольникToolStripMenuItem.Text = "Кривая Безье";
             this.треугольникToolStripMenuItem.Click += new System.EventHandler(this.треугольникToolStripMenuItem_Click);
             // 
             // четырехугольникToolStripMenuItem
             // 
             this.четырехугольникToolStripMenuItem.Name = "четырехугольникToolStripMenuItem";
             this.четырехугольникToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.четырехугольникToolStripMenuItem.Text = "Четырехугольник";
+            this.четырехугольникToolStripMenuItem.Text = "Прямоугольник";
             this.четырехугольникToolStripMenuItem.Click += new System.EventHandler(this.четырехугольникToolStripMenuItem_Click);
             // 
             // listBox1
             // 
+            this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(572, 31);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(228, 420);
             this.listBox1.TabIndex = 1;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(0, 31);
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.pictureBox1.Location = new System.Drawing.Point(13, 19);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(571, 418);
+            this.pictureBox1.Size = new System.Drawing.Size(541, 375);
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -238,6 +251,7 @@ namespace Vector_Editor
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.button3);
@@ -245,8 +259,9 @@ namespace Vector_Editor
             this.panel1.Controls.Add(this.button1);
             this.panel1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
             this.panel1.Location = new System.Drawing.Point(0, 331);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(138, 119);
+            this.panel1.Size = new System.Drawing.Size(139, 119);
             this.panel1.TabIndex = 3;
             // 
             // label1
@@ -263,6 +278,7 @@ namespace Vector_Editor
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button3.Location = new System.Drawing.Point(8, 90);
+            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(120, 23);
             this.button3.TabIndex = 2;
@@ -273,7 +289,8 @@ namespace Vector_Editor
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(8, 61);
+            this.button2.Location = new System.Drawing.Point(8, 62);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(120, 23);
             this.button2.TabIndex = 1;
@@ -285,6 +302,7 @@ namespace Vector_Editor
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.Location = new System.Drawing.Point(8, 32);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(120, 23);
             this.button1.TabIndex = 0;
@@ -292,16 +310,29 @@ namespace Vector_Editor
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.panel2.Controls.Add(this.pictureBox1);
+            this.panel2.Location = new System.Drawing.Point(0, 31);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(569, 416);
+            this.panel2.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.panel2);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Векторный редактор";
             this.menuStrip1.ResumeLayout(false);
@@ -309,6 +340,7 @@ namespace Vector_Editor
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -342,6 +374,7 @@ namespace Vector_Editor
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 

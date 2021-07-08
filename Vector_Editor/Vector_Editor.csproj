@@ -54,7 +54,10 @@
     <Compile Include="Form_Dialog.Designer.cs">
       <DependentUpon>Form_Dialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="IShapeBehavior.cs" />
     <Compile Include="IToolBehavior.cs" />
+    <Compile Include="ShapeBehaviorEllipse.cs" />
+    <Compile Include="ShapeBehaviorRectangle.cs" />
     <Compile Include="TNode.cs" />
     <Compile Include="TLstPointer.cs" />
     <Compile Include="TLstShape.cs" />

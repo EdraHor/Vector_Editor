@@ -11,12 +11,14 @@ namespace Vector_Editor
         private int _tempSelectedPoint = 0;
         private int _tempSelectedShape = 0;
         TLstShape<TShape> shapeList; // Список фигур
+        TLstPointer<TPoint> _list;
         private TPoint MousePos;
 
-        public void Enter(TLstShape<TShape> ShapeList)
+        public void Enter(TLstShape<TShape> ShapeList, TLstPointer<TPoint> list)
         {
             Console.WriteLine("Enter Hand behavior");
             shapeList = ShapeList; //Инициализируем список фигур
+            _list = list;
         }
 
 
@@ -25,14 +27,14 @@ namespace Vector_Editor
             Console.WriteLine("Exit Hand behavior");
         }
 
-        public void MouseDown(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
+        public void MouseDown(Graphics graphics, MouseEventArgs e)
         {
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < _list.Count; i++)
             {
-                if (Math.Abs(e.X - list.GetItem(i).X) < 10 && //Проверяем наличие курсора в область точки
-                    Math.Abs(e.Y - list.GetItem(i).Y) < 10)
+                if (Math.Abs(e.X - _list.GetItem(i).X) < 10 && //Проверяем наличие курсора в область точки
+                    Math.Abs(e.Y - _list.GetItem(i).Y) < 10)
                 {
-                    list.GetItem(i).Select();
+                    _list.GetItem(i).Select();
                     _tempSelectedPoint = i;
                     isDownOnPoint = true; //Выбрана точка
                     Cursor.Current = Cursors.Hand;
@@ -76,14 +78,14 @@ namespace Vector_Editor
             }
         }
 
-        public void MouseMove(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
+        public void MouseMove(Graphics graphics, MouseEventArgs e)
         {
             MousePos = new TPoint(e.X, e.Y); //Сохранение позиции мыши
             bool isPointSelected = false; //Выбрана ли точка в фигуре
             //                Перемещение                    //
             if (isDownOnPoint && !isDownOnShape) //Выбрана точка
             {
-                list.GetItem(_tempSelectedPoint).SetPoint(e.X, e.Y); //Перемещаем выбранную точку
+                _list.GetItem(_tempSelectedPoint).SetPoint(e.X, e.Y); //Перемещаем выбранную точку
                 Cursor.Current = Cursors.Hand;
             }
             else if (isDownOnShape && !isDownOnPoint) //Выбрана фигура
@@ -104,16 +106,16 @@ namespace Vector_Editor
             }
             //                Подсветка точек и фигур при наведении          //
 
-            for (int i = 0; i < list.Count; i++) //Перебираем точки
+            for (int i = 0; i < _list.Count; i++) //Перебираем точки
             {
-                if (Math.Abs(e.X - list.GetItem(i).X) < 10 && //Проверяем наличие курсора в область точки
-                    Math.Abs(e.Y - list.GetItem(i).Y) < 10)
+                if (Math.Abs(e.X - _list.GetItem(i).X) < 10 && //Проверяем наличие курсора в область точки
+                    Math.Abs(e.Y - _list.GetItem(i).Y) < 10)
                 {
-                    list.GetItem(i).Select();
+                    _list.GetItem(i).Select();
                 }
                 else
                 {
-                    list.GetItem(i).Deselect();
+                    _list.GetItem(i).Deselect();
                 }
             }
             for (int i = 0; i < shapeList.Count; i++) //Перебираем фигуры
@@ -152,14 +154,14 @@ namespace Vector_Editor
             }
         }
 
-        public void MouseUp(Graphics graphics, MouseEventArgs e, TLstPointer<TPoint> list)
+        public void MouseUp(Graphics graphics, MouseEventArgs e)
         {
                 isDownOnPoint = false;
                 isDownOnShape = false;
                 Cursor.Current = Cursors.Default;
         }
 
-        public void Paint(PaintEventArgs e, TLstPointer<TPoint> list)
+        public void Paint(PaintEventArgs e)
         {
             for (int i = 0; i < shapeList.Count; i++) //При наведении отрисовывается квадрат к центре фигуры
             {
