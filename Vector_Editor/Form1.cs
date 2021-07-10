@@ -11,12 +11,18 @@ namespace Vector_Editor
         public Form1()
         {
             InitializeComponent();
-            _g = pictureBox1.CreateGraphics();
+            size = new Size(1000, 1000);
+            _bitmap = new Bitmap(size.Width, size.Height); //Размер нашего рисунка
+            pictureBox1.Image = _bitmap;
+            pictureBox1.Size = size;
+            _g = Graphics.FromImage(_bitmap);
+
             InitBahaviors();
             _list = new TLstPointer<TPoint>();
             _shapeList = new TLstShape<TShape>();
             SetBehaviorByDefault();
             this.MouseWheel += new MouseEventHandler(pictureBox1_MouseWheel);
+            bitmapSizeLabel.Text = "W:  " + _bitmap.Width.ToString() + "  H:" + _bitmap.Height.ToString();
         }
         #region Настройки перья и кисти для отрисовки
             private readonly Pen _pen = new Pen(Color.Black, 2);
@@ -28,10 +34,11 @@ namespace Vector_Editor
 
         private Dictionary<Type, IToolBehavior> _behaviorsMap; //Словарь хранящий инструменты
         private IToolBehavior _сurrentBehavior; //Текущий инструмент
-        //public Bitmap buf;
+        private Bitmap _bitmap;
         private TLstPointer<TPoint> _list; //cписок хранящий все точки
         private TLstShape<TShape> _shapeList; //Список хранящий все фигуры
         private Graphics _g; //с помощью него рисуется вся графика на PictureBox
+        private Size size;
 
 
         public void SetBahaviorHand() //Устанавливает режим перемещения точек
@@ -80,11 +87,14 @@ namespace Vector_Editor
         }
 
         private Point prevLoc;
+        private TPoint mousePosB;
         #region Собития PictureBox
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            _сurrentBehavior.MouseMove(_g, e); //Выполняем событие внутри инструмента
             pictureBox1.Refresh(); //Перерисовываем область рисования
+
+            //mousePosLabel.Text = mousePosB.GetString();
+            _сurrentBehavior.MouseMove(_g, e); //Выполняем событие внутри инструмента
 
             if (e.Button == MouseButtons.Middle)//Перемещаем весь PictureBox средней кнопкой мыши
             {
@@ -96,15 +106,39 @@ namespace Vector_Editor
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            _сurrentBehavior.MouseDown(_g, e); //Выполняем событие внутри инструмента
+            mousePosB = new TPoint(_bitmap.Width * e.X / pictureBox1.Width, 
+                _bitmap.Height * e.Y / pictureBox1.Height);
+
+            _сurrentBehavior.MouseDown(_g, e, mousePosB); //Выполняем событие внутри инструмента
             UpdateUI(); //Перерисовка listBox
             prevLoc = e.Location; //Сохранение позиции мыши при нажатии
+            pictureBox1.Refresh(); //Перерисовываем область рисования
         }
 
         private void pictureBox1_MouseWheel(object sender, MouseEventArgs e) //Событие изменения колесика мыши
         {
-            if (e.Delta > 0 || e.Delta < 0) //Масштабирование формы на значение прокрутки колесика мыши
-                pictureBox1.Size = new Size(pictureBox1.Width + e.Delta/10, pictureBox1.Height + e.Delta/10);
+            //if (e.Delta > 0 || e.Delta < 0) //Масштабирование формы на значение прокрутки колесика мыши
+            //{
+            //    pictureBox1.Size = new Size(pictureBox1.Width + e.Delta / 10, pictureBox1.Height + e.Delta / 10);
+            //}
+
+            if (e.Delta != 0)
+            {
+                if (e.Delta < 0)
+                {
+                    //set minimum size to zoom
+                    if (pictureBox1.Width < 50)
+                        return;
+                }
+                else if (e.Delta > 0)
+                {
+                    //set maximum size to zoom
+                    if (pictureBox1.Width > 10000) //настроить
+                        return;
+                }
+                pictureBox1.Width += Convert.ToInt32(pictureBox1.Width * e.Delta / 1000);
+                pictureBox1.Height += Convert.ToInt32(pictureBox1.Height * e.Delta / 1000);
+            }
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -112,11 +146,13 @@ namespace Vector_Editor
             _сurrentBehavior.MouseUp(_g, e); //Выполняем событие внутри инструмента
             UpdateUI(); //Перерисовка listBox
         }
+
         int PrevBez = 0;
         private void pictureBox1_Paint(object sender, PaintEventArgs e) //Отрисовка всех точек и фигур
         {
             _сurrentBehavior.Paint(e);
 
+            _g.Clear(DefaultBackColor);
 
             for (int i = 0; i < _shapeList.Count; i++)  //Перебираем фигуры
             {
@@ -124,45 +160,45 @@ namespace Vector_Editor
 
                 for (int j = 0; j < Shape.Count; j++) //Перебираем точки внутри фигуры
                 {
-                    e.Graphics.DrawEllipse(new Pen(Shape.GetItem(j).Color),
+                    _g.DrawEllipse(new Pen(Shape.GetItem(j).Color),
                         Shape.GetItem(j).X - 5, Shape.GetItem(j).Y - 5, 10, 10); //рисуем точки
 
-                    e.Graphics.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
+                    _g.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
                         Shape.GetItem(j).X + _margin, Shape.GetItem(j).Y + _margin);
 
                     var Count = Shape.Count;
                     if (!_shapeList.GetItem(i).isBezier)
                     {
-                        e.Graphics.DrawLine(_pen, Shape.GetItem(j).X, Shape.GetItem(j).Y, //рисуем линии
+                        _g.DrawLine(_pen, Shape.GetItem(j).X, Shape.GetItem(j).Y, //рисуем линии
                             Shape.GetItem(j - 1).X, Shape.GetItem(j - 1).Y);
                         //Дорисовываем последний отрезок линии
-                        e.Graphics.DrawLine(_pen, Shape.GetItem(Count - 1).X, Shape.GetItem(Count - 1).Y, //рисуем линии
+                        _g.DrawLine(_pen, Shape.GetItem(Count - 1).X, Shape.GetItem(Count - 1).Y, //рисуем линии
                         Shape.GetItem(0).X, Shape.GetItem(0).Y);
                     }
                     else if (Shape != null && (Count - 1) % 3 == 0)
                     {
                         PrevBez = Count;
-                        e.Graphics.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray());
+                        _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray());
                     }
                     else if (PrevBez != 0 && _shapeList.GetItem(i).isBezier)
                     {
-                        e.Graphics.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray(PrevBez));
+                        _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray(PrevBez));
                     }
                 }
             }
 
             for (int i = 0; i < _list.Count; i++) //Перебираем точки
             {
-                e.Graphics.DrawEllipse(new Pen(_list.GetItem(i).Color),//Рисуем все точки
+                _g.DrawEllipse(new Pen(_list.GetItem(i).Color),//Рисуем все точки
                 _list.GetItem(i).X - 5, _list.GetItem(i).Y - 5, 10, 10);
-                e.Graphics.FillEllipse(_drawBrush, _list.GetItem(i).X - 5, _list.GetItem(i).Y - 5, 10, 10);
+                _g.FillEllipse(_drawBrush, _list.GetItem(i).X - 5, _list.GetItem(i).Y - 5, 10, 10);
 
-                e.Graphics.DrawString(i.ToString(), _drawFont, _drawBrush, //Рисуем номера точек
+                _g.DrawString(i.ToString(), _drawFont, _drawBrush, //Рисуем номера точек
                     _list.GetItem(i).X + _margin, _list.GetItem(i).Y + _margin);
 
                 if (i > 0 && _list.isDrawLines) //рисуем линии последовательно между точками
                 {
-                    e.Graphics.DrawLine(_pen, _list.GetItem(i).X, _list.GetItem(i).Y,
+                    _g.DrawLine(_pen, _list.GetItem(i).X, _list.GetItem(i).Y,
                         _list.GetItem(i - 1).X, _list.GetItem(i - 1).Y);
                 }
             }
@@ -170,9 +206,32 @@ namespace Vector_Editor
         #endregion
 
         #region Кнопки меню MenuItems
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog open_dialog = new OpenFileDialog(); //создание диалогового окна для выбора файла
+            open_dialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*"; //формат загружаемого файла
+            if (open_dialog.ShowDialog() == DialogResult.OK) //если в окне была нажата кнопка "ОК"
+            {
+                try
+                {
+                    var image = new Bitmap(open_dialog.FileName);
+                    //вместо pictureBox1 укажите pictureBox, в который нужно загрузить изображение 
+                    this.pictureBox1.Size = image.Size;
+                    pictureBox1.Image = image;
+                    pictureBox1.Invalidate();
+                }
+                catch
+                {
+                    DialogResult rezult = MessageBox.Show("Невозможно открыть выбранный файл",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void очиститьToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBox1.Invalidate();
+            pictureBox1.Invalidate(); //Перерисовываем область рисования
+            _g.Clear(DefaultBackColor);
             _list.Clear();
             _shapeList.Clear();
             UpdateUI();
@@ -416,5 +475,42 @@ namespace Vector_Editor
             UpdateImage();
         }
         #endregion
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F)
+            {
+                pictureBox1.Location = new Point(0, 0);
+                pictureBox1.Size = size; //настроить!
+            }
+        }
+
+        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image != null) //если в pictureBox есть изображение
+            {
+                //создание диалогового окна "Сохранить как..", для сохранения изображения
+                SaveFileDialog savedialog = new SaveFileDialog();
+                savedialog.Title = "Сохранить картинку как...";
+                //отображать ли предупреждение, если пользователь указывает имя уже существующего файла
+                savedialog.OverwritePrompt = true;
+                //отображать ли предупреждение, если пользователь указывает несуществующий путь
+                savedialog.CheckPathExists = true;
+                //список форматов файла, отображаемый в поле "Тип файла"
+                savedialog.Filter = "Image Files(*.BMP)|*.BMP|Image Files(*.JPG)|*.JPG|Image Files(*.GIF)|*.GIF|Image Files(*.PNG)|*.PNG|All files (*.*)|*.*";
+                if (savedialog.ShowDialog() == DialogResult.OK) //если в диалоговом окне нажата кнопка "ОК"
+                {
+                    try
+                    {
+                        pictureBox1.Image.Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Невозможно сохранить изображение", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
     }
 }

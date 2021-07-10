@@ -26,22 +26,20 @@ namespace Vector_Editor
             Console.WriteLine("Exit Points behavior");
         }
 
-        public void MouseDown(Graphics graphics, MouseEventArgs e)
+        public void MouseDown(Graphics graphics, MouseEventArgs e, TPoint mousePosB)
         {
-            TPoint mousePos = new TPoint(e.X, e.Y); //Запоминаем позицию мыши
-
             if (_list.isInFirst && e.Button == MouseButtons.Left)
             {
-                if (!_list.EqualPoints(mousePos, 10) && !shapeList.EqualPoints(mousePos, 10))
-                    _list.AddToFirst(mousePos);
+                if (!_list.EqualPoints(mousePosB, 10) && !shapeList.EqualPoints(mousePosB, 10))
+                    _list.AddToFirst(mousePosB);
             }
             else if (e.Button == MouseButtons.Left)
             {
                 if (!_list.isMiddlePoint)
                 {
-                    if (!_list.EqualPoints(mousePos, 10) && !shapeList.EqualPoints(mousePos, 10))
-                    _list.Add(mousePos);
-                    else if (_list.EqualPoints(mousePos, 10) && _list.IsFirst(mousePos, 10)
+                    if (!_list.EqualPoints(mousePosB, 10) && !shapeList.EqualPoints(mousePosB, 10))
+                    _list.Add(mousePosB);
+                    else if (_list.EqualPoints(mousePosB, 10) && _list.IsFirst(mousePosB, 10)
                             && _list.Count > 1) //замыкаем линию и создаем фигуру
                     {
                         shape = new TShape(_list);

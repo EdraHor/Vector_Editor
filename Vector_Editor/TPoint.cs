@@ -31,6 +31,12 @@ namespace Vector_Editor
             _point.Y = Convert.ToInt32(Y);
             Color = Color.Black;
         }
+        public TPoint(Point point)
+        {
+            _point.X = point.X;
+            _point.Y = point.Y;
+            Color = Color.Black;
+        }
         public TPoint(Vector2 vector)
         {
             _point.X = (int)vector.X;

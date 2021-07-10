@@ -26,7 +26,7 @@ namespace Vector_Editor
             Console.WriteLine("Exit Erase behavior");
         }
 
-        public void MouseDown(Graphics graphics, MouseEventArgs e)
+        public void MouseDown(Graphics graphics, MouseEventArgs e, TPoint mousePosB)
         {
             for (int i = 0; i < _list.Count; i++)
             {

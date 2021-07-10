@@ -44,7 +44,7 @@ namespace Vector_Editor
             Console.WriteLine("Exit Shape behavior");
         }
 
-        public void MouseDown(Graphics graphics, MouseEventArgs e)
+        public void MouseDown(Graphics graphics, MouseEventArgs e, TPoint mousePosB)
         {
             _сurrentShapeBehavior.MouseDown(graphics, e); //Выполняем событие внутри инструмента
         }

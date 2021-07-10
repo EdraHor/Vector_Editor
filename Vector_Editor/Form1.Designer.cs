@@ -30,6 +30,9 @@ namespace Vector_Editor
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.открытьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.сохранитьКакToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.тестыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.тест1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.тест4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,19 +59,25 @@ namespace Vector_Editor
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.bitmapSizeLabel = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.mousePosLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
-            this.menuStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.файлToolStripMenuItem,
             this.тестыToolStripMenuItem,
             this.bToolStripMenuItem,
             this.создатьТочкуToolStripMenuItem,
@@ -79,9 +88,32 @@ namespace Vector_Editor
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(569, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1086, 28);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // файлToolStripMenuItem
+            // 
+            this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.открытьToolStripMenuItem,
+            this.сохранитьКакToolStripMenuItem});
+            this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
+            this.файлToolStripMenuItem.Text = "Файл";
+            // 
+            // открытьToolStripMenuItem
+            // 
+            this.открытьToolStripMenuItem.Name = "открытьToolStripMenuItem";
+            this.открытьToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
+            this.открытьToolStripMenuItem.Text = "Открыть";
+            this.открытьToolStripMenuItem.Click += new System.EventHandler(this.открытьToolStripMenuItem_Click);
+            // 
+            // сохранитьКакToolStripMenuItem
+            // 
+            this.сохранитьКакToolStripMenuItem.Name = "сохранитьКакToolStripMenuItem";
+            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.сохранитьКакToolStripMenuItem.Text = "Сохранить как";
+            this.сохранитьКакToolStripMenuItem.Click += new System.EventHandler(this.сохранитьКакToolStripMenuItem_Click);
             // 
             // тестыToolStripMenuItem
             // 
@@ -202,21 +234,21 @@ namespace Vector_Editor
             // линияToolStripMenuItem
             // 
             this.линияToolStripMenuItem.Name = "линияToolStripMenuItem";
-            this.линияToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.линияToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.линияToolStripMenuItem.Text = "Линия";
             this.линияToolStripMenuItem.Click += new System.EventHandler(this.линияToolStripMenuItem_Click);
             // 
             // треугольникToolStripMenuItem
             // 
             this.треугольникToolStripMenuItem.Name = "треугольникToolStripMenuItem";
-            this.треугольникToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.треугольникToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.треугольникToolStripMenuItem.Text = "Кривая Безье";
             this.треугольникToolStripMenuItem.Click += new System.EventHandler(this.треугольникToolStripMenuItem_Click);
             // 
             // четырехугольникToolStripMenuItem
             // 
             this.четырехугольникToolStripMenuItem.Name = "четырехугольникToolStripMenuItem";
-            this.четырехугольникToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.четырехугольникToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.четырехугольникToolStripMenuItem.Text = "Прямоугольник";
             this.четырехугольникToolStripMenuItem.Click += new System.EventHandler(this.четырехугольникToolStripMenuItem_Click);
             // 
@@ -226,7 +258,7 @@ namespace Vector_Editor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(572, 31);
+            this.listBox1.Location = new System.Drawing.Point(858, 31);
             this.listBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(228, 420);
@@ -237,11 +269,12 @@ namespace Vector_Editor
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.pictureBox1.Location = new System.Drawing.Point(13, 19);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(541, 375);
+            this.pictureBox1.Size = new System.Drawing.Size(600, 350);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -258,10 +291,10 @@ namespace Vector_Editor
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
             this.panel1.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.panel1.Location = new System.Drawing.Point(0, 331);
+            this.panel1.Location = new System.Drawing.Point(0, 280);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(139, 119);
+            this.panel1.Size = new System.Drawing.Size(139, 135);
             this.panel1.TabIndex = 3;
             // 
             // label1
@@ -316,31 +349,89 @@ namespace Vector_Editor
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.panel2.Controls.Add(this.panel3);
             this.panel2.Controls.Add(this.pictureBox1);
             this.panel2.Location = new System.Drawing.Point(0, 31);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(569, 416);
+            this.panel2.Size = new System.Drawing.Size(855, 416);
             this.panel2.TabIndex = 4;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel3.Controls.Add(this.panel5);
+            this.panel3.Controls.Add(this.panel4);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(0, 386);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(855, 30);
+            this.panel3.TabIndex = 3;
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.SystemColors.Control;
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.bitmapSizeLabel);
+            this.panel5.Location = new System.Drawing.Point(143, -2);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(139, 34);
+            this.panel5.TabIndex = 5;
+            // 
+            // bitmapSizeLabel
+            // 
+            this.bitmapSizeLabel.AutoSize = true;
+            this.bitmapSizeLabel.Location = new System.Drawing.Point(10, 8);
+            this.bitmapSizeLabel.Name = "bitmapSizeLabel";
+            this.bitmapSizeLabel.Size = new System.Drawing.Size(43, 17);
+            this.bitmapSizeLabel.TabIndex = 4;
+            this.bitmapSizeLabel.Text = "W: H:";
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.SystemColors.Control;
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel4.Controls.Add(this.mousePosLabel);
+            this.panel4.Location = new System.Drawing.Point(-2, -2);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(139, 30);
+            this.panel4.TabIndex = 0;
+            // 
+            // mousePosLabel
+            // 
+            this.mousePosLabel.AutoSize = true;
+            this.mousePosLabel.Location = new System.Drawing.Point(10, 11);
+            this.mousePosLabel.Name = "mousePosLabel";
+            this.mousePosLabel.Size = new System.Drawing.Size(38, 17);
+            this.mousePosLabel.TabIndex = 4;
+            this.mousePosLabel.Text = "X: Y:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1086, 450);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panel2);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Векторный редактор";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -375,6 +466,14 @@ namespace Vector_Editor
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem открытьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem сохранитьКакToolStripMenuItem;
+        private System.Windows.Forms.Label mousePosLabel;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label bitmapSizeLabel;
+        private System.Windows.Forms.Panel panel4;
     }
 }
 

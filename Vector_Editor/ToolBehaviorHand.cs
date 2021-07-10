@@ -27,7 +27,7 @@ namespace Vector_Editor
             Console.WriteLine("Exit Hand behavior");
         }
 
-        public void MouseDown(Graphics graphics, MouseEventArgs e)
+        public void MouseDown(Graphics graphics, MouseEventArgs e, TPoint mousePosB)
         {
             for (int i = 0; i < _list.Count; i++)
             {
@@ -166,7 +166,7 @@ namespace Vector_Editor
             for (int i = 0; i < shapeList.Count; i++) //При наведении отрисовывается квадрат к центре фигуры
             {
                 var Shape = shapeList.GetItem(i);
-                if (Math.Abs(MousePos.X - Shape.GetCenterPoint().X) < 15 &&
+                if (MousePos != null && Math.Abs(MousePos.X - Shape.GetCenterPoint().X) < 15 &&
                     Math.Abs(MousePos.Y - Shape.GetCenterPoint().Y) < 15)
                 {
                     e.Graphics.DrawRectangle(new Pen(Color.Red), Shape.GetCenterPoint().X - 5,
