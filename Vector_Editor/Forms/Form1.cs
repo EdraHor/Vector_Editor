@@ -13,17 +13,20 @@ namespace Vector_Editor
             InitializeComponent();
             size = new Size(1000, 1000);
             _bitmap = new Bitmap(size.Width, size.Height); //Размер нашего рисунка
-            pictureBox1.Image = _bitmap;
-            pictureBox1.Size = size;
             _g = Graphics.FromImage(_bitmap);
 
-            InitBahaviors();
-            _list = new TLstPointer<TPoint>();
-            _shapeList = new TLstShape<TShape>();
-            SetBehaviorByDefault();
+            _mainList = new TShapeList();
+            pictureBox1.Image = _bitmap;
+            pictureBox1.Size = size;
+            
             this.MouseWheel += new MouseEventHandler(pictureBox1_MouseWheel);
             bitmapSizeLabel.Text = "W:  " + _bitmap.Width.ToString() + "  H:" + _bitmap.Height.ToString();
+
+            InitBahaviors();
+            SetBehaviorByDefault();
         }
+        TShapeList _mainList;
+
         #region Настройки перья и кисти для отрисовки
             private readonly Pen _pen = new Pen(Color.Black, 2);
             private readonly Font _drawFont = new Font("Arial", 12);
@@ -35,10 +38,11 @@ namespace Vector_Editor
         private Dictionary<Type, IToolBehavior> _behaviorsMap; //Словарь хранящий инструменты
         private IToolBehavior _сurrentBehavior; //Текущий инструмент
         private Bitmap _bitmap;
-        private TLstPointer<TPoint> _list; //cписок хранящий все точки
-        private TLstShape<TShape> _shapeList; //Список хранящий все фигуры
+        private TListOfPoints _list; //cписок хранящий все точки
+        private TListOfShape _shapeList; //Список хранящий все фигуры
         private Graphics _g; //с помощью него рисуется вся графика на PictureBox
         private Size size;
+        private TPoint _mousePos;
 
 
         public void SetBahaviorHand() //Устанавливает режим перемещения точек
@@ -65,18 +69,18 @@ namespace Vector_Editor
         public void UpdateUI() //Перерисовка списка точек в listBox
         {
             listBox1.Items.Clear(); //очищаем ListBox со списком точек и фигур
-            for (int i = 0; i < _list.Count; i++)
-            {
-                listBox1.Items.Add(_list.GetStringPoint(i));
-            }
-            for (int i = 0; i < _shapeList.Count; i++) //Перебираем фигуры
+            var i = 0;
+
+            foreach (var shape in _mainList)//Перебираем фигуры
             {
                 listBox1.Items.Add("Shape #" + i.ToString());
-                var Shape = _shapeList.GetItem(i).Item;
-                for (int j = 0; j < Shape.Count; j++) //Перебираем точки внутри фигуры
+
+                foreach (var point in shape)//Перебираем точки внутри фигуры
                 {
-                    listBox1.Items.Add("-----" + Shape.GetStringPoint(j));
+                    if (point != null)
+                        listBox1.Items.Add("-----" + point.GetString());
                 }
+                i++;
             }
         }
 
@@ -87,29 +91,31 @@ namespace Vector_Editor
         }
 
         private Point prevLoc;
-        private TPoint mousePosB;
         #region Собития PictureBox
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
+            _сurrentBehavior.MouseMove(e, _mousePos); //Выполняем событие внутри инструмента
             pictureBox1.Refresh(); //Перерисовываем область рисования
 
-            //mousePosLabel.Text = mousePosB.GetString();
-            _сurrentBehavior.MouseMove(_g, e); //Выполняем событие внутри инструмента
+            _mousePos = new TPoint(_bitmap.Width * e.X / pictureBox1.Width,
+            _bitmap.Height * e.Y / pictureBox1.Height);
+            mousePosLabel.Text = _mousePos.GetString();
 
             if (e.Button == MouseButtons.Middle)//Перемещаем весь PictureBox средней кнопкой мыши
             {
                 Cursor.Current = Cursors.NoMove2D;
                 pictureBox1.Location = new Point(pictureBox1.Location.X + (e.X - prevLoc.X),
-                    pictureBox1.Location.Y + (e.Y - prevLoc.Y));
+                pictureBox1.Location.Y + (e.Y - prevLoc.Y));
             }
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            mousePosB = new TPoint(_bitmap.Width * e.X / pictureBox1.Width, 
+            _mousePos = new TPoint(_bitmap.Width * e.X / pictureBox1.Width,
                 _bitmap.Height * e.Y / pictureBox1.Height);
 
-            _сurrentBehavior.MouseDown(_g, e, mousePosB); //Выполняем событие внутри инструмента
+            _сurrentBehavior.MouseDown(e, _mousePos); //Выполняем событие внутри инструмента
+
             UpdateUI(); //Перерисовка listBox
             prevLoc = e.Location; //Сохранение позиции мыши при нажатии
             pictureBox1.Refresh(); //Перерисовываем область рисования
@@ -143,65 +149,97 @@ namespace Vector_Editor
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            _сurrentBehavior.MouseUp(_g, e); //Выполняем событие внутри инструмента
+            _сurrentBehavior.MouseUp(e, _mousePos); //Выполняем событие внутри инструмента
             UpdateUI(); //Перерисовка listBox
         }
 
-        int PrevBez = 0;
+        int PrevBez = 0; //Для того чтобы кривая Безье рисовалась всегда (обычно при (count % 3) + 1)
         private void pictureBox1_Paint(object sender, PaintEventArgs e) //Отрисовка всех точек и фигур
         {
-            _сurrentBehavior.Paint(e);
+            _сurrentBehavior.Paint(e, _mousePos);
 
             _g.Clear(DefaultBackColor);
 
-            for (int i = 0; i < _shapeList.Count; i++)  //Перебираем фигуры
+            foreach (var item in _mainList._list.Values)
             {
-                var Shape = _shapeList.GetItem(i).Item;
-
-                for (int j = 0; j < Shape.Count; j++) //Перебираем точки внутри фигуры
-                {
-                    _g.DrawEllipse(new Pen(Shape.GetItem(j).Color),
-                        Shape.GetItem(j).X - 5, Shape.GetItem(j).Y - 5, 10, 10); //рисуем точки
-
-                    _g.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
-                        Shape.GetItem(j).X + _margin, Shape.GetItem(j).Y + _margin);
-
-                    var Count = Shape.Count;
-                    if (!_shapeList.GetItem(i).isBezier)
-                    {
-                        _g.DrawLine(_pen, Shape.GetItem(j).X, Shape.GetItem(j).Y, //рисуем линии
-                            Shape.GetItem(j - 1).X, Shape.GetItem(j - 1).Y);
-                        //Дорисовываем последний отрезок линии
-                        _g.DrawLine(_pen, Shape.GetItem(Count - 1).X, Shape.GetItem(Count - 1).Y, //рисуем линии
-                        Shape.GetItem(0).X, Shape.GetItem(0).Y);
-                    }
-                    else if (Shape != null && (Count - 1) % 3 == 0)
-                    {
-                        PrevBez = Count;
-                        _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray());
-                    }
-                    else if (PrevBez != 0 && _shapeList.GetItem(i).isBezier)
-                    {
-                        _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray(PrevBez));
-                    }
-                }
+                item.Draw(_g);
             }
+            //foreach (var shapes in _mainList.GetRectangles())
+            //{
+            //    var j = 0;
+            //    var Count = shapes.Count;
+            //    foreach (var points in shapes)
+            //    {
+            //        var prev = shapes.GetItem(j - 1);
+            //        _g.DrawEllipse(new Pen(points.Color),
+            //            points.X - 5, points.Y - 5, 10, 10); //рисуем точки
 
-            for (int i = 0; i < _list.Count; i++) //Перебираем точки
-            {
-                _g.DrawEllipse(new Pen(_list.GetItem(i).Color),//Рисуем все точки
-                _list.GetItem(i).X - 5, _list.GetItem(i).Y - 5, 10, 10);
-                _g.FillEllipse(_drawBrush, _list.GetItem(i).X - 5, _list.GetItem(i).Y - 5, 10, 10);
+            //        _g.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
+            //            points.X + _margin, points.Y + _margin);
 
-                _g.DrawString(i.ToString(), _drawFont, _drawBrush, //Рисуем номера точек
-                    _list.GetItem(i).X + _margin, _list.GetItem(i).Y + _margin);
+            //        _g.DrawLine(_pen, points.X, points.Y, //рисуем линии
+            //            shapes.GetItem(j - 1).X, shapes.GetItem(j - 1).Y);
+            //        //Дорисовываем последний отрезок линии
+            //        _g.DrawLine(_pen, shapes.GetItem(Count - 1).X, shapes.GetItem(Count - 1).Y, //рисуем линии
+            //            shapes.GetItem(0).X, shapes.GetItem(0).Y);
+            //        j++;
+            //    }
+                
+            //}
+            //var o = 0;
+            //foreach (var points in _mainList.GetPoints())
+            //{
+            //    var list = _mainList.GetPoints();
+            //    _g.DrawEllipse(new Pen(points.Color),//Рисуем все точки
+            //        points.X - 5, points.Y - 5, 10, 10);
+            //    _g.FillEllipse(_drawBrush, points.X - 5, points.Y - 5, 10, 10);
 
-                if (i > 0 && _list.isDrawLines) //рисуем линии последовательно между точками
-                {
-                    _g.DrawLine(_pen, _list.GetItem(i).X, _list.GetItem(i).Y,
-                        _list.GetItem(i - 1).X, _list.GetItem(i - 1).Y);
-                }
-            }
+            //    _g.DrawString(o.ToString(), _drawFont, _drawBrush, //Рисуем номера точек
+            //        points.X + _margin, points.Y + _margin);
+
+            //    if (o > 0 && _list.isDrawLines) //рисуем линии последовательно между точками
+            //    {
+            //        _g.DrawLine(_pen, points.X, points.Y,
+            //            list.GetItem(o - 1).X, list.GetItem(o - 1).Y);
+            //    }
+            //    o++;
+            //}
+
+            //var i = 0;
+            //foreach (var shape in _mainList.GetShapes())  //Перебираем фигуры
+            //{
+            //    var j = 0;
+            //    foreach (var point in shape) //Перебираем точки внутри фигуры
+            //    {
+            //        _g.DrawEllipse(new Pen(point.Color),
+            //            point.X - 5, point.Y - 5, 10, 10); //рисуем точки
+
+            //        _g.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
+            //            point.X + _margin, point.Y + _margin);
+
+            //        var Count = shape.Count;
+            //        if (!shape.isBezier)
+            //        {
+            //            _g.DrawLine(_pen, point.X, point.Y, //рисуем линии
+            //                shape.GetItem(j - 1).X, shape.GetItem(j - 1).Y);
+            //            //Дорисовываем последний отрезок линии
+            //            _g.DrawLine(_pen, shape.GetItem(Count - 1).X, shape.GetItem(Count - 1).Y, //рисуем линии
+            //            shape.GetItem(0).X, shape.GetItem(0).Y);
+            //        }
+            //        else if (shape != null && (Count - 1) % 3 == 0)
+            //        {
+            //            PrevBez = Count;
+            //            _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray());
+            //        }
+            //        else if (PrevBez != 0 && _shapeList.GetItem(i).isBezier)
+            //        {
+            //            _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray(PrevBez));
+            //        }
+            //        j++;
+            //    }
+            //    i++;
+            //}
+
         }
         #endregion
 
@@ -227,6 +265,35 @@ namespace Vector_Editor
                 }
             }
         }
+
+        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image != null) //если в pictureBox есть изображение
+            {
+                //создание диалогового окна "Сохранить как..", для сохранения изображения
+                SaveFileDialog savedialog = new SaveFileDialog();
+                savedialog.Title = "Сохранить картинку как...";
+                //отображать ли предупреждение, если пользователь указывает имя уже существующего файла
+                savedialog.OverwritePrompt = true;
+                //отображать ли предупреждение, если пользователь указывает несуществующий путь
+                savedialog.CheckPathExists = true;
+                //список форматов файла, отображаемый в поле "Тип файла"
+                savedialog.Filter = "JPEG (*.JPG)|*.jpg|BMP (*.BMP)|*.BMP|GIF (*.GIF)|*.GIF|PNG (*.PNG)|*.PNG|Все файлы (*.*)|*.*";
+                if (savedialog.ShowDialog() == DialogResult.OK) //если в диалоговом окне нажата кнопка "ОК"
+                {
+                    try
+                    {
+                        pictureBox1.Image.Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Невозможно сохранить изображение", "Ошибка",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
 
         private void очиститьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -274,7 +341,7 @@ namespace Vector_Editor
                     _сurrentBehavior.Exit();
 
                 this._сurrentBehavior = newBehavior; //Входим в новый инструмент
-                this._сurrentBehavior.Enter(_shapeList, _list);
+                this._сurrentBehavior.Enter(_mainList, _g);
             }
             else Console.WriteLine("Этот инструмент сейчас уже используется");
         }
@@ -351,14 +418,14 @@ namespace Vector_Editor
         #region Функционал блока B
         private void соеденитьТочкиПоследовательноToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!_list.isDrawLines) //проверяем включен ли режим
+            if (!Options.isDrawLines) //проверяем включен ли режим
             {
-                _list.isDrawLines = true;
+                Options.isDrawLines = true;
                 соеденитьТочкиПоследовательноToolStripMenuItem.Checked = true;
             }
             else
             {
-                _list.isDrawLines = false;
+                Options.isDrawLines = false;
                 соеденитьТочкиПоследовательноToolStripMenuItem.Checked = false;
             }
 
@@ -366,14 +433,14 @@ namespace Vector_Editor
 
         private void режимУмногоДобавленияТочекToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!_list.isMiddlePoint)//проверяем включен ли режим
+            if (!Options.isMiddlePoint)//проверяем включен ли режим
             {
-                _list.isMiddlePoint = true;
+                Options.isMiddlePoint = true;
                 режимУмногоДобавленияТочекToolStripMenuItem.Checked = true;
             }
             else
             {
-                _list.isMiddlePoint = false;
+                Options.isMiddlePoint = false;
                 режимУмногоДобавленияТочекToolStripMenuItem.Checked = false;
             }
         }
@@ -382,15 +449,15 @@ namespace Vector_Editor
         {
             Form_Dialog testDialog = new Form_Dialog(_list, this);
 
-            if (!_list.isTransformAndRotate)//проверяем включен ли режим
+            if (!Options.isTransformAndRotate)//проверяем включен ли режим
             {
-                _list.isTransformAndRotate = true;
+                Options.isTransformAndRotate = true;
                 поворотИПеремещениеToolStripMenuItem.Checked = true;
                 testDialog.Show(); //открываем форму перемещения/поворота
             }
             else
             {
-                _list.isTransformAndRotate = false;
+                Options.isTransformAndRotate = false;
                 поворотИПеремещениеToolStripMenuItem.Checked = false;
                 testDialog.Close(); //закрываем форму перемещения/поворота
             }
@@ -399,14 +466,14 @@ namespace Vector_Editor
 
         private void добавлениеТочкиВНачалоToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!_list.isInFirst)
+            if (!Options.isInFirst)
             {
-                _list.isInFirst = true;
+                Options.isInFirst = true;
                 добавлениеТочкиВНачалоToolStripMenuItem.Checked = true;
             }
             else
             {
-                _list.isInFirst = false;
+                Options.isInFirst = false;
                 добавлениеТочкиВНачалоToolStripMenuItem.Checked = false;
             }
         }
@@ -416,7 +483,7 @@ namespace Vector_Editor
         private void линияToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
-            _shapeList.ShapeSides = 2; //Рисуем линию
+            Options.ShapeSides = 2; //Рисуем линию
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
             линияToolStripMenuItem.Checked = true; 
             треугольникToolStripMenuItem.Checked = false;
@@ -426,7 +493,7 @@ namespace Vector_Editor
         private void треугольникToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
-            _shapeList.ShapeSides = 3; //Рисуем треугольник
+            Options.ShapeSides = 3; //Рисуем треугольник
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
             треугольникToolStripMenuItem.Checked = true;
             линияToolStripMenuItem.Checked = false;
@@ -436,7 +503,7 @@ namespace Vector_Editor
         private void четырехугольникToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
-            _shapeList.ShapeSides = 4; //Рисуем четырехугольник
+            Options.ShapeSides = 4; //Рисуем четырехугольник
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
             четырехугольникToolStripMenuItem.Checked = true;
             треугольникToolStripMenuItem.Checked = false;
@@ -482,34 +549,6 @@ namespace Vector_Editor
             {
                 pictureBox1.Location = new Point(0, 0);
                 pictureBox1.Size = size; //настроить!
-            }
-        }
-
-        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pictureBox1.Image != null) //если в pictureBox есть изображение
-            {
-                //создание диалогового окна "Сохранить как..", для сохранения изображения
-                SaveFileDialog savedialog = new SaveFileDialog();
-                savedialog.Title = "Сохранить картинку как...";
-                //отображать ли предупреждение, если пользователь указывает имя уже существующего файла
-                savedialog.OverwritePrompt = true;
-                //отображать ли предупреждение, если пользователь указывает несуществующий путь
-                savedialog.CheckPathExists = true;
-                //список форматов файла, отображаемый в поле "Тип файла"
-                savedialog.Filter = "Image Files(*.BMP)|*.BMP|Image Files(*.JPG)|*.JPG|Image Files(*.GIF)|*.GIF|Image Files(*.PNG)|*.PNG|All files (*.*)|*.*";
-                if (savedialog.ShowDialog() == DialogResult.OK) //если в диалоговом окне нажата кнопка "ОК"
-                {
-                    try
-                    {
-                        pictureBox1.Image.Save(savedialog.FileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Невозможно сохранить изображение", "Ошибка",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
             }
         }
     }

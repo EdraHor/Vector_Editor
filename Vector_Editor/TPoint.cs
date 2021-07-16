@@ -43,7 +43,11 @@ namespace Vector_Editor
             _point.Y = (int)vector.Y;
             Color = Color.Black;             //end
         }
-
+        
+        public Point ToPoint()
+        {
+            return new Point(X, Y);
+        }
         public void SetPoint(int X, int Y)//Установка координат точки
         {
             _point.X = X;

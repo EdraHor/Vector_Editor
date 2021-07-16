@@ -1,46 +1,56 @@
-﻿using System.Drawing;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Vector_Editor
 {
-    public class TShape
+    public abstract class TFigure : IEnumerable<TPoint>
     {
-        public TLstPointer<TPoint> Item; //Список точек фигуры
-        public int Count { get => Item.Count; } //Количество точек фигуры
+        public TListOfPoints Points { get; protected set; } //Список точек фигуры
+        public int Count { get => Points.Count; } //Количество точек фигуры
         public bool isSelect; //Выделена ли фигура
         public bool isBezier = false;
+        public bool isClosed = false;
 
-        public TShape() //Конструктор инициализирует список точек фигуры.
+        public TPoint FirstPoint => Points.FirstItem.Data;
+        public TPoint LastPoint => Points.LastItem.Data;
+
+        public TFigure() //Конструктор инициализирует список точек фигуры.
         {
-            Item = new TLstPointer<TPoint>();
+            Points = new TListOfPoints();
         }
-        public TShape(TLstPointer<TPoint> ShapePoints) //Конструктор создает фигуру из списка 
+        public TFigure(TListOfPoints ShapePoints) //Конструктор создает фигуру из списка 
         {
-            Item = new TLstPointer<TPoint>();
+            Points = new TListOfPoints();
             for (int i = 0; i < ShapePoints.Count; i++)
             {
-                Item.Add(ShapePoints.GetItem(i));
+                Points.Add(ShapePoints.GetItem(i));
             }
         }
 
+        public abstract void Draw(Graphics g);
+
         public void AddPoint(TPoint _point) //Добавляет фигуру в конец
         {
-            Item.Add(_point);
+            Points.Add(_point);
         }
+        public TPoint GetItem(int pos) => Points.GetItem(pos);
         public void SetPoint(int position, TPoint _point) //Устанавливает значение
         {
-            Item.SetItem(position, _point);
+            Points.SetItem(position, _point);
         }
         public void RemovePoint(int position) //удаляет фигуру
         {
-            Item.Remove(position);
+            Points.Remove(position);
         }
         public Point[] GetArray() //Преобразуем список TPoint в массив Point и возвращает его
         {
-            Point[] Array = new Point[Item.Count];
+            Point[] Array = new Point[Points.Count];
 
-            for (int i = 0; i < Item.Count; i++)
+            for (int i = 0; i < Points.Count; i++)
             {
-                Array[i] = Item.GetItem(i)._point;
+                Array[i] = Points.GetItem(i)._point;
             }
             return Array;
         }
@@ -51,35 +61,35 @@ namespace Vector_Editor
 
             for (int i = 0; i < upToPos; i++)
             {
-                Array[i] = Item.GetItem(i)._point;
+                Array[i] = Points.GetItem(i)._point;
             }
             return Array;
         }
 
         public TPoint GetCenterPoint()
         {
-            var Count = Item.Count;
+            var Count = Points.Count;
             double SumX = 0;
             double SumY = 0;
             for (int i = 0; i < Count; i++)
             {
-                SumX += Item.GetItem(i).X;
-                SumY += Item.GetItem(i).Y;
+                SumX += Points.GetItem(i).X;
+                SumY += Points.GetItem(i).Y;
             }
             return new TPoint(SumX / Count, SumY / Count);
         }
 
         public void Moving(TPoint MovePos) //Перемещает фигуру в указанную точку
         {
-            TPoint Diff,Move,Center;
+            TPoint Diff, Move, Center;
             Center = GetCenterPoint();
             for (int i = 0; i < Count; i++)
             {
                 //Разница между каждой точкой и центром фигуры
-                Diff = new TPoint(Center.X - Item.GetItem(i).X, Center.Y - Item.GetItem(i).Y);
+                Diff = new TPoint(Center.X - Points.GetItem(i).X, Center.Y - Points.GetItem(i).Y);
                 //Возвращаем эту разницу ориентируясь на новое место
                 Move = new TPoint(MovePos.X - Diff.X, MovePos.Y - Diff.Y);
-                Item.SetItem(i, Move);
+                Points.SetItem(i, Move);
             }
         }
 
@@ -88,7 +98,7 @@ namespace Vector_Editor
             isSelect = true;
             for (int i = 0; i < Count; i++)
             {
-                Item.GetItem(i).Select();
+                Points.GetItem(i).Select();
             }
         }
         public void Deselect() //снимает выделение с фигуруры и всех ее точек
@@ -96,7 +106,23 @@ namespace Vector_Editor
             isSelect = false;
             for (int i = 0; i < Count; i++)
             {
-                Item.GetItem(i).Deselect();
+                Points.GetItem(i).Deselect();
+            }
+        }
+
+        // реализация интерфейса IEnumerable для быстрого перебора всех элементов списка
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)this).GetEnumerator();
+        }
+
+        IEnumerator<TPoint> IEnumerable<TPoint>.GetEnumerator()
+        {
+            TNode<TPoint> current = Points.FirstItem;
+            while (current != null)
+            {
+                yield return current.Data;
+                current = current.Next;
             }
         }
     }
