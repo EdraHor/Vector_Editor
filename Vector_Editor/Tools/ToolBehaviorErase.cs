@@ -8,11 +8,10 @@ namespace Vector_Editor
     {
         private bool _isFocusedPoint = false;
         private bool _isFocusedShape = false;
-        private int _tempDeletePos;
+        private Guid _tempDeleteFigure;
+        private int _tempDeletePoint;
         private TPoint _mousePos; //Позиция мыши, меняется каждый MouseMove
 
-        TListOfShape shapeList; // Список фигур
-        TListOfPoints _list;
         TShapeList _mainList;
         private Graphics _g;
 
@@ -31,87 +30,109 @@ namespace Vector_Editor
 
         public void MouseDown(MouseEventArgs e, TPoint mousePos)
         {
-            for (int i = 0; i < _list.Count; i++)
+            if (e.Button == MouseButtons.Left)
             {
-                if (Math.Abs(e.X - _list.GetItem(i).X) < 10 &&
-                    Math.Abs(e.Y - _list.GetItem(i).Y) < 10)
+                foreach (var shape in _mainList)
                 {
-                    _tempDeletePos = i;
-                    _isFocusedPoint = true;
-                }
-            }
-
-            for (int i = 0; i < shapeList.Count; i++) //Перебираем фигуры
-            {
-                var Shape = shapeList.GetItem(i);
-                if (Math.Abs(e.X - Shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
-                    Math.Abs(e.Y - Shape.GetCenterPoint().Y) < 15)   //фигуры
-                {
-                    for (int j = 0; j < Shape.Count; j++)
+                    var p = 0;
+                    //сохраняем точку для удаления
+                    foreach (var point in shape)
                     {
-                        Shape.Points.GetItem(j).Select();
+                        if (Math.Abs(mousePos.X - point.X) < 10 &&
+                            Math.Abs(mousePos.Y - point.Y) < 10)
+                        {
+                            _tempDeleteFigure = shape.ID;
+                            _tempDeletePoint = p;
+                            //shape.RemovePoint(_tempDeletePoint);
+                            _isFocusedPoint = true; //Выбрана точка
+
+                        }
+                        p++;
                     }
-                    _tempDeletePos = i;
-                    _isFocusedShape = true; //Выбрана фигура
+                    //сохраняем фигуру для удаления
+                    if (Math.Abs(mousePos.X - shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
+                        Math.Abs(mousePos.Y - shape.GetCenterPoint().Y) < 15)   //фигуры
+                    {
+                        foreach (var point in shape)
+                        {
+                            point.Select();
+                        }
+                        _tempDeleteFigure = shape.ID;
+                        _isFocusedShape = true; //Выбрана фигура
+                    }
                 }
             }
         }
 
         public void MouseMove(MouseEventArgs e, TPoint mousePos)
         {
-            _mousePos = new TPoint(e.X, e.Y); //Сохранение позиции мыши
-            for (int i = 0; i < _list.Count; i++) //Выделение точки при наведении
+            bool isPointSelected = false; //Выбрана ли точка в фигуре
+            //выделение точек
+            foreach (var shape in _mainList) //Выделение точки при наведении
             {
-                if (Math.Abs(e.X - _list.GetItem(i).X) < 10 &&
-                    Math.Abs(e.Y - _list.GetItem(i).Y) < 10)
+                foreach (var point in shape)
                 {
-                    _list.GetItem(i).Select();
-                }
-                else _list.GetItem(i).Deselect();
-            }
-
-            for (int i = 0; i < shapeList.Count; i++) //Перебираем фигуры
-            {
-                var Shape = shapeList.GetItem(i);
-                if (Math.Abs(e.X - Shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
-                    Math.Abs(e.Y - Shape.GetCenterPoint().Y) < 15)   //фигуры
-                {
-                    for (int j = 0; j < Shape.Count; j++)
+                    if (Math.Abs(mousePos.X - point.X) < 10 && //Проверяем наличие курсора в область точки
+                        Math.Abs(mousePos.Y - point.Y) < 10)   //фигуры
                     {
-                        Shape.Points.GetItem(j).Select();
+                        point.Select();
+                        isPointSelected = true;
+                    }
+                    else
+                    {
+                        if (!shape.isSelect) point.Deselect();
+                    }
+                }
+                if (Math.Abs(mousePos.X - shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
+                    Math.Abs(mousePos.Y - shape.GetCenterPoint().Y) < 15)   //фигуры
+                {
+                    foreach (var point in shape)
+                    {
+                        point.Select();
                     }
                 }
                 else
                 {
-                    for (int j = 0; j < Shape.Count; j++)
+                    foreach (var point in shape)
                     {
-                        if (!Shape.isSelect) Shape.Points.GetItem(j).Deselect();
+                        if (!isPointSelected && !shape.isSelect) point.Deselect();
                     }
                 }
-            }
+
+                //Отрисовка центров фигур
+                if (mousePos != null && Math.Abs(mousePos.X - shape.GetCenterPoint().X) < 15 &&
+                    Math.Abs(mousePos.Y - shape.GetCenterPoint().Y) < 15)
+                {
+                    _g.DrawRectangle(new Pen(Color.Red), shape.GetCenterPoint().X - 5,
+                    shape.GetCenterPoint().Y - 5, 10, 10);
+                }
+                else
+                {
+                    _g.DrawRectangle(new Pen(Color.Gray), shape.GetCenterPoint().X - 5,
+                    shape.GetCenterPoint().Y - 5, 10, 10);
+                }
+                foreach (var point in shape)
+                {
+                    _g.FillEllipse(new SolidBrush(point.Color), point.X - 4, point.Y - 4, 8, 8);
+                }
         }
+    }
+        
+    
 
         public void MouseUp(MouseEventArgs e, TPoint mousePos)
         {
-            if (_isFocusedPoint) _list.Remove(_tempDeletePos);
-            else if (_isFocusedShape) shapeList.Remove(_tempDeletePos);
+            if (_isFocusedPoint) _mainList._list[_tempDeleteFigure].RemovePoint(_tempDeletePoint);
+            else if (_isFocusedShape) _mainList.Remove(_tempDeleteFigure);
 
             _isFocusedPoint = false;
             _isFocusedShape = false;
         }
+    
 
         public void Paint(PaintEventArgs e, TPoint mousePos)
         {
-            for (int i = 0; i < shapeList.Count; i++) //При наведении отрисовывается квадрат к центре фигуры
-            {
-                var Shape = shapeList.GetItem(i);
-                if (Math.Abs(_mousePos.X - Shape.GetCenterPoint().X) < 15 &&
-                    Math.Abs(_mousePos.Y - Shape.GetCenterPoint().Y) < 15)
-                {
-                    e.Graphics.DrawRectangle(new Pen(Color.Red), Shape.GetCenterPoint().X - 5,
-                        Shape.GetCenterPoint().Y - 5, 10, 10);
-                }
-            }
+            
         }
     }
 }

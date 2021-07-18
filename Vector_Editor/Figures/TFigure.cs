@@ -1,14 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace Vector_Editor
 {
-    public abstract class TFigure : IEnumerable<TPoint>
+    public class TFigure : IEnumerable<TPoint> //ICloneable
     {
         public TListOfPoints Points { get; protected set; } //Список точек фигуры
         public int Count { get => Points.Count; } //Количество точек фигуры
+        public Guid ID; //уникальный номер фигуры
         public bool isSelect; //Выделена ли фигура
         public bool isBezier = false;
         public bool isClosed = false;
@@ -19,9 +21,11 @@ namespace Vector_Editor
         public TFigure() //Конструктор инициализирует список точек фигуры.
         {
             Points = new TListOfPoints();
+            ID = Guid.NewGuid();
         }
         public TFigure(TListOfPoints ShapePoints) //Конструктор создает фигуру из списка 
         {
+            ID = Guid.NewGuid();
             Points = new TListOfPoints();
             for (int i = 0; i < ShapePoints.Count; i++)
             {
@@ -29,7 +33,23 @@ namespace Vector_Editor
             }
         }
 
-        public abstract void Draw(Graphics g);
+        public virtual void Draw(Graphics g)
+        {
+            var i = 0;
+            if (!isClosed) //если полигон еще не закончен, то мы не ресуем последнюю линию
+                foreach (var item in Points)
+                {
+                    g.DrawLine(Options.Pen, item.ToPoint(), GetItem(i - 1).ToPoint());
+                    i++;
+                }
+            else
+            if (isClosed)
+            {
+                g.FillPolygon(Options.Brush, GetArray());
+                g.DrawPolygon(Options.Pen, GetArray());
+            }
+        }
+
 
         public void AddPoint(TPoint _point) //Добавляет фигуру в конец
         {
@@ -40,9 +60,12 @@ namespace Vector_Editor
         {
             Points.SetItem(position, _point);
         }
-        public void RemovePoint(int position) //удаляет фигуру
+        public void RemovePoint(int position) //удаляет точку
         {
-            Points.Remove(position);
+            if (Points.Count > 1)
+                Points.Remove(position);
+            else
+                Options.ListOfShapes._list.Remove(ID);
         }
         public Point[] GetArray() //Преобразуем список TPoint в массив Point и возвращает его
         {
@@ -124,6 +147,17 @@ namespace Vector_Editor
                 yield return current.Data;
                 current = current.Next;
             }
+        }
+
+        public virtual TFigure Clone()
+        {
+            var figure = new TFigure();
+            figure.isClosed = isClosed;
+            foreach (var point in this)
+            {
+                figure.Points.Add(new TPoint(point.X, point.Y));
+            }
+            return figure;
         }
     }
 }

@@ -96,9 +96,9 @@ namespace Vector_Editor
         }
         public void TransformAt(int xt, int yt) // Перемещение всех точек на указаннное растояние
         {
-            for (int i = 0; i < Count; i++)
+            foreach (var point in this)
             {
-                SetItem(i, new TPoint(GetItem(i).X + xt, GetItem(i).Y += yt));
+                point.SetPoint(point.X + xt, point.Y + yt);
             }
         }
 

@@ -24,13 +24,20 @@ namespace Vector_Editor
 
             InitBahaviors();
             SetBehaviorByDefault();
+            Options.PictureBox = pictureBox1;
+            Options.Bitmap = _bitmap;
+            Options.ListOfShapes = _mainList;
+            Options.Pen = _pen;
+            Options.Brush = _drawBrush;
+            panel6.BackColor = Options.Brush.Color;
+            panel7.BackColor = Options.Pen.Color;
+            numericUpDown1.Value = (decimal)Options.Pen.Width;
         }
-        TShapeList _mainList;
-
+        TShapeList _mainList; 
         #region Настройки перья и кисти для отрисовки
-            private readonly Pen _pen = new Pen(Color.Black, 2);
+            private readonly Pen _pen = new Pen(Color.Black, 3);
             private readonly Font _drawFont = new Font("Arial", 12);
-            private readonly SolidBrush _drawBrush = new SolidBrush(Color.Black);
+            private readonly SolidBrush _drawBrush = new SolidBrush(Color.Chocolate);
             private readonly int _margin = 4;
         #endregion
 
@@ -38,8 +45,6 @@ namespace Vector_Editor
         private Dictionary<Type, IToolBehavior> _behaviorsMap; //Словарь хранящий инструменты
         private IToolBehavior _сurrentBehavior; //Текущий инструмент
         private Bitmap _bitmap;
-        private TListOfPoints _list; //cписок хранящий все точки
-        private TListOfShape _shapeList; //Список хранящий все фигуры
         private Graphics _g; //с помощью него рисуется вся графика на PictureBox
         private Size size;
         private TPoint _mousePos;
@@ -88,6 +93,11 @@ namespace Vector_Editor
         {
             UpdateUI();
             pictureBox1.Invalidate();
+            _g.Clear(DefaultBackColor);
+            foreach (var shape in _mainList)
+            {
+                shape.Draw(_g);
+            }
         }
 
         private Point prevLoc;
@@ -150,7 +160,7 @@ namespace Vector_Editor
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
             _сurrentBehavior.MouseUp(e, _mousePos); //Выполняем событие внутри инструмента
-            UpdateUI(); //Перерисовка listBox
+            UpdateImage();
         }
 
         int PrevBez = 0; //Для того чтобы кривая Безье рисовалась всегда (обычно при (count % 3) + 1)
@@ -160,85 +170,10 @@ namespace Vector_Editor
 
             _g.Clear(DefaultBackColor);
 
-            foreach (var item in _mainList._list.Values)
+            foreach (var shape in _mainList)
             {
-                item.Draw(_g);
+                shape.Draw(_g);
             }
-            //foreach (var shapes in _mainList.GetRectangles())
-            //{
-            //    var j = 0;
-            //    var Count = shapes.Count;
-            //    foreach (var points in shapes)
-            //    {
-            //        var prev = shapes.GetItem(j - 1);
-            //        _g.DrawEllipse(new Pen(points.Color),
-            //            points.X - 5, points.Y - 5, 10, 10); //рисуем точки
-
-            //        _g.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
-            //            points.X + _margin, points.Y + _margin);
-
-            //        _g.DrawLine(_pen, points.X, points.Y, //рисуем линии
-            //            shapes.GetItem(j - 1).X, shapes.GetItem(j - 1).Y);
-            //        //Дорисовываем последний отрезок линии
-            //        _g.DrawLine(_pen, shapes.GetItem(Count - 1).X, shapes.GetItem(Count - 1).Y, //рисуем линии
-            //            shapes.GetItem(0).X, shapes.GetItem(0).Y);
-            //        j++;
-            //    }
-                
-            //}
-            //var o = 0;
-            //foreach (var points in _mainList.GetPoints())
-            //{
-            //    var list = _mainList.GetPoints();
-            //    _g.DrawEllipse(new Pen(points.Color),//Рисуем все точки
-            //        points.X - 5, points.Y - 5, 10, 10);
-            //    _g.FillEllipse(_drawBrush, points.X - 5, points.Y - 5, 10, 10);
-
-            //    _g.DrawString(o.ToString(), _drawFont, _drawBrush, //Рисуем номера точек
-            //        points.X + _margin, points.Y + _margin);
-
-            //    if (o > 0 && _list.isDrawLines) //рисуем линии последовательно между точками
-            //    {
-            //        _g.DrawLine(_pen, points.X, points.Y,
-            //            list.GetItem(o - 1).X, list.GetItem(o - 1).Y);
-            //    }
-            //    o++;
-            //}
-
-            //var i = 0;
-            //foreach (var shape in _mainList.GetShapes())  //Перебираем фигуры
-            //{
-            //    var j = 0;
-            //    foreach (var point in shape) //Перебираем точки внутри фигуры
-            //    {
-            //        _g.DrawEllipse(new Pen(point.Color),
-            //            point.X - 5, point.Y - 5, 10, 10); //рисуем точки
-
-            //        _g.DrawString(j.ToString(), _drawFont, _drawBrush, //рисуем номера точек
-            //            point.X + _margin, point.Y + _margin);
-
-            //        var Count = shape.Count;
-            //        if (!shape.isBezier)
-            //        {
-            //            _g.DrawLine(_pen, point.X, point.Y, //рисуем линии
-            //                shape.GetItem(j - 1).X, shape.GetItem(j - 1).Y);
-            //            //Дорисовываем последний отрезок линии
-            //            _g.DrawLine(_pen, shape.GetItem(Count - 1).X, shape.GetItem(Count - 1).Y, //рисуем линии
-            //            shape.GetItem(0).X, shape.GetItem(0).Y);
-            //        }
-            //        else if (shape != null && (Count - 1) % 3 == 0)
-            //        {
-            //            PrevBez = Count;
-            //            _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray());
-            //        }
-            //        else if (PrevBez != 0 && _shapeList.GetItem(i).isBezier)
-            //        {
-            //            _g.DrawBeziers(_pen, _shapeList.GetItem(i).GetArray(PrevBez));
-            //        }
-            //        j++;
-            //    }
-            //    i++;
-            //}
 
         }
         #endregion
@@ -299,8 +234,7 @@ namespace Vector_Editor
         {
             pictureBox1.Invalidate(); //Перерисовываем область рисования
             _g.Clear(DefaultBackColor);
-            _list.Clear();
-            _shapeList.Clear();
+            _mainList.Clear();
             UpdateUI();
         }
 
@@ -361,38 +295,42 @@ namespace Vector_Editor
         #region Тестирование
         private void тест1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _list.Clear(); //Удаляем все точки и фигуры в списке
+            _mainList.Clear(); //Удаляем все точки и фигуры в списке
 
-            _list.Add(new TPoint(100, 100)); //Добавляем базовый набор точек
-            _list.Add(new TPoint(200, 100));
-            _list.Add(new TPoint(200, 200));
-            _list.GetItem(0).SetColor(Color.Red); //Изменяем цвет первой точки
+            TPolygon poly = new TPolygon();
+            poly.AddPoint(new TPoint(100, 100)); //Добавляем базовый набор точек
+            poly.AddPoint(new TPoint(200, 100));
+            poly.AddPoint(new TPoint(200, 200));
+            poly.GetItem(0).SetColor(Color.Red); //Изменяем цвет первой точки
+            _mainList.AddPolygon(poly);
             тест1ToolStripMenuItem.Checked = true;
             UpdateUI();
         }
 
         private void тест4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _list.Clear(); //Удаляем все точки и фигуры в списке
+            _mainList.Clear(); //Удаляем все точки и фигуры в списке
 
-            _list.Add(new TPoint(100, 100)); //Добавляем базовый набор точек
-            _list.Add(new TPoint(200, 100));
-            _list.Add(new TPoint(200, 200));
-            _list.GetItem(2).SetColor(Color.Blue); //Изменяем цвет третей точки
+            TPolygon poly = new TPolygon();
+            poly.AddPoint(new TPoint(100, 100)); //Добавляем базовый набор точек
+            poly.AddPoint(new TPoint(200, 100));
+            poly.AddPoint(new TPoint(200, 200));
+            poly.GetItem(2).SetColor(Color.Blue); //Изменяем цвет третей точки
             тест4ToolStripMenuItem.Checked = true;
             UpdateUI();
         }
 
         private void тест7ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _list.Clear(); //Удаляем все точки и фигуры в списке
+            _mainList.Clear(); //Удаляем все точки и фигуры в списке
 
-            _list.Add(new TPoint(100, 100)); //Добавляем базовый набор точек
-            _list.Add(new TPoint(200, 100));
-            _list.Add(new TPoint(200, 200));
-            for (int i = 0; i < _list.Count; i++) //Изменяем цвет всех точек
+            TPolygon poly = new TPolygon();
+            poly.AddPoint(new TPoint(100, 100)); //Добавляем базовый набор точек
+            poly.AddPoint(new TPoint(200, 100));
+            poly.AddPoint(new TPoint(200, 200));
+            foreach (var point in poly)
             {
-                _list.GetItem(i).SetColor(Color.Aqua);
+                point.Select();
             }
             тест7ToolStripMenuItem.Checked = true;
             UpdateUI();
@@ -400,15 +338,16 @@ namespace Vector_Editor
 
         private void тест10ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _list.Clear(); //Удаляем все точки и фигуры в списке
+            _mainList.Clear(); //Удаляем все точки и фигуры в списке
 
-            _list.Add(new TPoint(100, 100)); //Добавляем базовый набор точек
-            _list.Add(new TPoint(200, 100));
-            _list.Add(new TPoint(200, 200));
+            TPolygon poly = new TPolygon();
+            poly.AddPoint(new TPoint(100, 100)); //Добавляем базовый набор точек
+            poly.AddPoint(new TPoint(200, 100));
+            poly.AddPoint(new TPoint(200, 200));
 
-            _list.Remove(0); //Удаляем певую точку
+            poly.RemovePoint(0); //Удаляем певую точку
 
-            _list.InstanceItem(0, new TPoint(110, 110)); //Добавляем на место первой точки новую
+            poly.Points.InstanceItem(0, new TPoint(110, 110)); //Добавляем на место первой точки новую
             тест10ToolStripMenuItem.Checked = true;      //смещенную на 10px вправо
 
             UpdateUI();
@@ -447,7 +386,7 @@ namespace Vector_Editor
 
         private void поворотИПеремещениеToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Form_Dialog testDialog = new Form_Dialog(_list, this);
+            Form_Dialog testDialog = new Form_Dialog(this);
 
             if (!Options.isTransformAndRotate)//проверяем включен ли режим
             {
@@ -485,9 +424,6 @@ namespace Vector_Editor
             SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
             Options.ShapeSides = 2; //Рисуем линию
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
-            линияToolStripMenuItem.Checked = true; 
-            треугольникToolStripMenuItem.Checked = false;
-            четырехугольникToolStripMenuItem.Checked = false;
         }
 
         private void треугольникToolStripMenuItem_Click(object sender, EventArgs e)
@@ -495,9 +431,6 @@ namespace Vector_Editor
             SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
             Options.ShapeSides = 3; //Рисуем треугольник
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
-            треугольникToolStripMenuItem.Checked = true;
-            линияToolStripMenuItem.Checked = false;
-            четырехугольникToolStripMenuItem.Checked = false;
         }
 
         private void четырехугольникToolStripMenuItem_Click(object sender, EventArgs e)
@@ -505,40 +438,40 @@ namespace Vector_Editor
             SetBehaviorByDefault(); //для того чтобы сменить тип фигуры сбрасываем инструмент
             Options.ShapeSides = 4; //Рисуем четырехугольник
             SetBahaviorShape(); //Устанавливаем режим рисования фигур
-            четырехугольникToolStripMenuItem.Checked = true;
-            треугольникToolStripMenuItem.Checked = false;
-            линияToolStripMenuItem.Checked = false;
         }
         #endregion
 
         #region Быстрое выделение фигур
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e) //Полигоны
         {
-            for (int i = 0; i < _shapeList.Count; i++) //Перебираем фигуры
+            foreach (var key in _mainList.polygonKeys)
             {
-                var Shape = _shapeList.GetItem(i);
-                if (Shape.Count == 2) Shape.Select(); //Выбираем все линии
+                _mainList.AddToSelect(key);
+                _mainList._list[key].Select();
             }
+            Options.multiSelect = true;
             UpdateImage();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) //Прямоугольники
         {
-            for (int i = 0; i < _shapeList.Count; i++) //Перебираем фигуры
+            foreach (var key in _mainList.rectangleKeys)
             {
-                var Shape = _shapeList.GetItem(i);
-                if (Shape.Count == 3) Shape.Select(); //Выбираем все треугольник
+                _mainList.AddToSelect(key);
+                _mainList._list[key].Select();
             }
+            Options.multiSelect = true;
             UpdateImage();
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        { 
-            for (int i = 0; i < _shapeList.Count; i++) //Перебираем фигуры
+        private void button3_Click(object sender, EventArgs e) //Все фигуры
+        {
+            foreach (var shape in _mainList)
             {
-                var Shape = _shapeList.GetItem(i);
-                if (Shape.Count == 4) Shape.Select(); //Выбираем все четырехугольник
+                _mainList.AddToSelect(shape.ID);
+                shape.Select();
             }
+            Options.multiSelect = true;
             UpdateImage();
         }
         #endregion
@@ -550,6 +483,67 @@ namespace Vector_Editor
                 pictureBox1.Location = new Point(0, 0);
                 pictureBox1.Size = size; //настроить!
             }
+        }
+
+        private void buttonRotateLeft_Click(object sender, EventArgs e)
+        {
+            int angle = Convert.ToInt32(InputAngle.Text);
+            _mainList.RotateAt(_mainList.GetCenterSelected(), -angle);
+            UpdateImage();
+        }
+
+        private void buttonRotateRight_Click(object sender, EventArgs e)
+        {
+            int angle = Convert.ToInt32(InputAngle.Text);
+            _mainList.RotateAt(_mainList.GetCenterSelected(), angle);
+            UpdateImage();
+        }
+
+        private void buttonCopy_Click(object sender, EventArgs e)
+        {
+            _mainList.CopySelected();
+            UpdateImage();
+        }
+
+        private void buttonPaste_Click(object sender, EventArgs e)
+        {
+            _mainList.Paste();
+            UpdateImage();
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            foreach (var key in _mainList.selectedKeys)
+            {
+                _mainList._list.Remove(key);
+            }
+            UpdateImage();
+        }
+
+        private void panel6_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // установка цвета формы
+            panel6.BackColor = colorDialog1.Color;
+            Options.Brush.Color = colorDialog1.Color;
+            UpdateImage();
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            Options.Pen.Width = (float)numericUpDown1.Value;
+            UpdateImage();
+        }
+
+        private void panel7_Click(object sender, EventArgs e)
+        {
+            if (colorDialog2.ShowDialog() == DialogResult.Cancel)
+                return;
+            // установка цвета формы
+            panel7.BackColor = colorDialog2.Color;
+            Options.Pen.Color = colorDialog2.Color;
+            UpdateImage();
         }
     }
 }

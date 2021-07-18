@@ -64,6 +64,29 @@ namespace Vector_Editor
             this.bitmapSizeLabel = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.mousePosLabel = new System.Windows.Forms.Label();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.buttonCopy = new System.Windows.Forms.Button();
+            this.buttonPaste = new System.Windows.Forms.Button();
+            this.buttonDelete = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.buttonRotateLeft = new System.Windows.Forms.Button();
+            this.buttonRotateRight = new System.Windows.Forms.Button();
+            this.InputAngle = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.colorDialog2 = new System.Windows.Forms.ColorDialog();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -71,6 +94,15 @@ namespace Vector_Editor
             this.panel3.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -88,7 +120,7 @@ namespace Vector_Editor
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1086, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1086, 30);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -98,7 +130,7 @@ namespace Vector_Editor
             this.открытьToolStripMenuItem,
             this.сохранитьКакToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
-            this.файлToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(59, 26);
             this.файлToolStripMenuItem.Text = "Файл";
             // 
             // открытьToolStripMenuItem
@@ -111,7 +143,7 @@ namespace Vector_Editor
             // сохранитьКакToolStripMenuItem
             // 
             this.сохранитьКакToolStripMenuItem.Name = "сохранитьКакToolStripMenuItem";
-            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
             this.сохранитьКакToolStripMenuItem.Text = "Сохранить как";
             this.сохранитьКакToolStripMenuItem.Click += new System.EventHandler(this.сохранитьКакToolStripMenuItem_Click);
             // 
@@ -123,7 +155,7 @@ namespace Vector_Editor
             this.тест7ToolStripMenuItem,
             this.тест10ToolStripMenuItem});
             this.тестыToolStripMenuItem.Name = "тестыToolStripMenuItem";
-            this.тестыToolStripMenuItem.Size = new System.Drawing.Size(63, 24);
+            this.тестыToolStripMenuItem.Size = new System.Drawing.Size(63, 26);
             this.тестыToolStripMenuItem.Text = "Тесты";
             // 
             // тест1ToolStripMenuItem
@@ -162,7 +194,7 @@ namespace Vector_Editor
             this.поворотИПеремещениеToolStripMenuItem,
             this.добавлениеТочкиВНачалоToolStripMenuItem});
             this.bToolStripMenuItem.Name = "bToolStripMenuItem";
-            this.bToolStripMenuItem.Size = new System.Drawing.Size(32, 24);
+            this.bToolStripMenuItem.Size = new System.Drawing.Size(32, 26);
             this.bToolStripMenuItem.Text = "B";
             // 
             // соеденитьТочкиПоследовательноToolStripMenuItem
@@ -196,28 +228,28 @@ namespace Vector_Editor
             // создатьТочкуToolStripMenuItem
             // 
             this.создатьТочкуToolStripMenuItem.Name = "создатьТочкуToolStripMenuItem";
-            this.создатьТочкуToolStripMenuItem.Size = new System.Drawing.Size(90, 24);
+            this.создатьТочкуToolStripMenuItem.Size = new System.Drawing.Size(90, 26);
             this.создатьТочкуToolStripMenuItem.Text = "Создание";
             this.создатьТочкуToolStripMenuItem.Click += new System.EventHandler(this.создатьТочкуToolStripMenuItem_Click);
             // 
             // перемещениеТочекToolStripMenuItem
             // 
             this.перемещениеТочекToolStripMenuItem.Name = "перемещениеТочекToolStripMenuItem";
-            this.перемещениеТочекToolStripMenuItem.Size = new System.Drawing.Size(124, 24);
+            this.перемещениеТочекToolStripMenuItem.Size = new System.Drawing.Size(124, 26);
             this.перемещениеТочекToolStripMenuItem.Text = "Перемещение";
             this.перемещениеТочекToolStripMenuItem.Click += new System.EventHandler(this.перемещениеТочекToolStripMenuItem_Click);
             // 
             // удалениеToolStripMenuItem
             // 
             this.удалениеToolStripMenuItem.Name = "удалениеToolStripMenuItem";
-            this.удалениеToolStripMenuItem.Size = new System.Drawing.Size(90, 24);
+            this.удалениеToolStripMenuItem.Size = new System.Drawing.Size(90, 26);
             this.удалениеToolStripMenuItem.Text = "Удаление";
             this.удалениеToolStripMenuItem.Click += new System.EventHandler(this.удалениеToolStripMenuItem_Click);
             // 
             // очиститьToolStripMenuItem
             // 
             this.очиститьToolStripMenuItem.Name = "очиститьToolStripMenuItem";
-            this.очиститьToolStripMenuItem.Size = new System.Drawing.Size(87, 24);
+            this.очиститьToolStripMenuItem.Size = new System.Drawing.Size(87, 26);
             this.очиститьToolStripMenuItem.Text = "Очистить";
             this.очиститьToolStripMenuItem.Click += new System.EventHandler(this.очиститьToolStripMenuItem_Click);
             // 
@@ -228,7 +260,7 @@ namespace Vector_Editor
             this.треугольникToolStripMenuItem,
             this.четырехугольникToolStripMenuItem});
             this.фигурыToolStripMenuItem.Name = "фигурыToolStripMenuItem";
-            this.фигурыToolStripMenuItem.Size = new System.Drawing.Size(76, 24);
+            this.фигурыToolStripMenuItem.Size = new System.Drawing.Size(76, 26);
             this.фигурыToolStripMenuItem.Text = "Фигуры";
             // 
             // линияToolStripMenuItem
@@ -254,14 +286,13 @@ namespace Vector_Editor
             // 
             // listBox1
             // 
-            this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(858, 31);
+            this.listBox1.Location = new System.Drawing.Point(3, 3);
             this.listBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(228, 420);
+            this.listBox1.Size = new System.Drawing.Size(263, 387);
             this.listBox1.TabIndex = 1;
             // 
             // pictureBox1
@@ -269,11 +300,11 @@ namespace Vector_Editor
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.Control;
             this.pictureBox1.Location = new System.Drawing.Point(13, 19);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(600, 350);
+            this.pictureBox1.Size = new System.Drawing.Size(548, 350);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
@@ -310,10 +341,10 @@ namespace Vector_Editor
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button3.Location = new System.Drawing.Point(8, 90);
+            this.button3.Location = new System.Drawing.Point(0, 90);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(120, 23);
+            this.button3.Size = new System.Drawing.Size(139, 23);
             this.button3.TabIndex = 2;
             this.button3.Text = "Все фигуры";
             this.button3.UseVisualStyleBackColor = true;
@@ -322,24 +353,24 @@ namespace Vector_Editor
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(8, 62);
+            this.button2.Location = new System.Drawing.Point(0, 62);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(120, 23);
+            this.button2.Size = new System.Drawing.Size(139, 23);
             this.button2.TabIndex = 1;
-            this.button2.Text = "Триугольники";
+            this.button2.Text = "Прямоугольники";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(8, 32);
+            this.button1.Location = new System.Drawing.Point(0, 32);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(120, 23);
+            this.button1.Size = new System.Drawing.Size(139, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Линии";
+            this.button1.Text = "Полигоны";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -353,7 +384,7 @@ namespace Vector_Editor
             this.panel2.Controls.Add(this.pictureBox1);
             this.panel2.Location = new System.Drawing.Point(0, 31);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(855, 416);
+            this.panel2.Size = new System.Drawing.Size(803, 416);
             this.panel2.TabIndex = 4;
             // 
             // panel3
@@ -365,7 +396,7 @@ namespace Vector_Editor
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel3.Location = new System.Drawing.Point(0, 386);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(855, 30);
+            this.panel3.Size = new System.Drawing.Size(803, 30);
             this.panel3.TabIndex = 3;
             // 
             // panel5
@@ -406,12 +437,234 @@ namespace Vector_Editor
             this.mousePosLabel.TabIndex = 4;
             this.mousePosLabel.Text = "X: Y:";
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.tabControl1.Location = new System.Drawing.Point(809, 30);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(277, 420);
+            this.tabControl1.TabIndex = 4;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.groupBox3);
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(269, 391);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Свойства";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.flowLayoutPanel2);
+            this.groupBox2.Location = new System.Drawing.Point(5, 112);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(258, 141);
+            this.groupBox2.TabIndex = 7;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Фигуры";
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.buttonCopy);
+            this.flowLayoutPanel2.Controls.Add(this.buttonPaste);
+            this.flowLayoutPanel2.Controls.Add(this.buttonDelete);
+            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 18);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(252, 120);
+            this.flowLayoutPanel2.TabIndex = 4;
+            // 
+            // buttonCopy
+            // 
+            this.buttonCopy.AutoSize = true;
+            this.buttonCopy.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonCopy.Location = new System.Drawing.Point(3, 3);
+            this.buttonCopy.Name = "buttonCopy";
+            this.buttonCopy.Size = new System.Drawing.Size(96, 27);
+            this.buttonCopy.TabIndex = 7;
+            this.buttonCopy.Text = "Копировать";
+            this.buttonCopy.UseVisualStyleBackColor = true;
+            this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);
+            // 
+            // buttonPaste
+            // 
+            this.buttonPaste.AutoSize = true;
+            this.buttonPaste.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonPaste.Location = new System.Drawing.Point(105, 3);
+            this.buttonPaste.Name = "buttonPaste";
+            this.buttonPaste.Size = new System.Drawing.Size(78, 27);
+            this.buttonPaste.TabIndex = 5;
+            this.buttonPaste.Text = "Вставить";
+            this.buttonPaste.UseVisualStyleBackColor = true;
+            this.buttonPaste.Click += new System.EventHandler(this.buttonPaste_Click);
+            // 
+            // buttonDelete
+            // 
+            this.buttonDelete.AutoSize = true;
+            this.buttonDelete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonDelete.Location = new System.Drawing.Point(3, 36);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(73, 27);
+            this.buttonDelete.TabIndex = 8;
+            this.buttonDelete.Text = "Удалить";
+            this.buttonDelete.UseVisualStyleBackColor = true;
+            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.flowLayoutPanel1);
+            this.groupBox1.Controls.Add(this.InputAngle);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(258, 103);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Поворот";
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.buttonRotateLeft);
+            this.flowLayoutPanel1.Controls.Add(this.buttonRotateRight);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 66);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(252, 34);
+            this.flowLayoutPanel1.TabIndex = 4;
+            // 
+            // buttonRotateLeft
+            // 
+            this.buttonRotateLeft.AutoSize = true;
+            this.buttonRotateLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonRotateLeft.Location = new System.Drawing.Point(3, 3);
+            this.buttonRotateLeft.Name = "buttonRotateLeft";
+            this.buttonRotateLeft.Size = new System.Drawing.Size(75, 27);
+            this.buttonRotateLeft.TabIndex = 7;
+            this.buttonRotateLeft.Text = "Влево";
+            this.buttonRotateLeft.UseVisualStyleBackColor = true;
+            this.buttonRotateLeft.Click += new System.EventHandler(this.buttonRotateLeft_Click);
+            // 
+            // buttonRotateRight
+            // 
+            this.buttonRotateRight.AutoSize = true;
+            this.buttonRotateRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buttonRotateRight.Location = new System.Drawing.Point(84, 3);
+            this.buttonRotateRight.Name = "buttonRotateRight";
+            this.buttonRotateRight.Size = new System.Drawing.Size(75, 27);
+            this.buttonRotateRight.TabIndex = 5;
+            this.buttonRotateRight.Text = "Вправо";
+            this.buttonRotateRight.UseVisualStyleBackColor = true;
+            this.buttonRotateRight.Click += new System.EventHandler(this.buttonRotateRight_Click);
+            // 
+            // InputAngle
+            // 
+            this.InputAngle.Location = new System.Drawing.Point(54, 32);
+            this.InputAngle.Name = "InputAngle";
+            this.InputAngle.Size = new System.Drawing.Size(54, 22);
+            this.InputAngle.TabIndex = 5;
+            this.InputAngle.Text = "30";
+            this.InputAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 35);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(42, 17);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Угол:";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.listBox1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(269, 393);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Список фигур";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // panel6
+            // 
+            this.panel6.Location = new System.Drawing.Point(6, 21);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(79, 22);
+            this.panel6.TabIndex = 8;
+            this.panel6.Click += new System.EventHandler(this.panel6_Click);
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(6, 78);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(102, 22);
+            this.numericUpDown1.TabIndex = 9;
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // 
+            // panel7
+            // 
+            this.panel7.Location = new System.Drawing.Point(6, 49);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(79, 22);
+            this.panel7.TabIndex = 9;
+            this.panel7.Click += new System.EventHandler(this.panel7_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.numericUpDown1);
+            this.groupBox3.Controls.Add(this.panel7);
+            this.groupBox3.Controls.Add(this.panel6);
+            this.groupBox3.Location = new System.Drawing.Point(5, 259);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(258, 113);
+            this.groupBox3.TabIndex = 10;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Дизайн";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(92, 21);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(120, 17);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Заливка контура";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(92, 49);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 17);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Цвет контура";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(114, 78);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(114, 17);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Размер контура";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1086, 450);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panel2);
@@ -432,6 +685,19 @@ namespace Vector_Editor
             this.panel5.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -474,6 +740,29 @@ namespace Vector_Editor
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Label bitmapSizeLabel;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button buttonRotateLeft;
+        private System.Windows.Forms.Button buttonRotateRight;
+        private System.Windows.Forms.TextBox InputAngle;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.Button buttonCopy;
+        private System.Windows.Forms.Button buttonPaste;
+        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.ColorDialog colorDialog2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
     }
 }
 

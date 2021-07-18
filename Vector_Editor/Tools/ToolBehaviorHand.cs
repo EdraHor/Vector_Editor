@@ -9,10 +9,9 @@ namespace Vector_Editor
         private bool isDownOnPoint; //мы нажали по точке
         private bool isDownOnShape; //мы нажали по фигуре
         private int _tempSelectedPoint = 0;
-        private int _tempSelectedShape = 0;
+        private Guid _tempSelectedShape;
         //TListOfShape shapeList; // Список фигур
         //TListOfPoints _list;
-        private TPoint MousePos;
 
         TShapeList _mainList;
         Graphics _g;
@@ -23,7 +22,6 @@ namespace Vector_Editor
             //shapeList = ShapeList; //Инициализируем список фигур
             _mainList = mainList;
             _g = graphics;
-            //_list = list;
         }
 
 
@@ -34,170 +32,164 @@ namespace Vector_Editor
 
         public void MouseDown(MouseEventArgs e, TPoint mousePos)
         {
-            var i = 0;
-            //foreach (var points in _mainList.GetPoints())
-            //{
-            //    if (Math.Abs(e.X - points.X) < 10 && //Проверяем наличие курсора в область точки
-            //        Math.Abs(e.Y - points.Y) < 10)
-            //    {
-            //        points.Select();
-            //        _tempSelectedPoint = i;
-            //        isDownOnPoint = true; //Выбрана точка
-            //        Cursor.Current = Cursors.Hand;
-            //    }
-            //    i++;
-            //}
-            //i = 0;
-            //var j = 0; 
-            //foreach (var shapes in _mainList.GetShapes())
-            //{
-            //    if (e.Button == MouseButtons.Right) shapes.Deselect();
-            //    foreach (var points in shapes)
-            //    {
-            //        if (Math.Abs(e.X - points.X) < 10 && //Проверяем наличие курсора в область точки
-            //            Math.Abs(e.Y - points.Y) < 10)   //фигуры
-            //        {
-            //            points.Select();
-            //            _tempSelectedPoint = j;
-            //            _tempSelectedShape = i;
-            //            isDownOnPoint = true;
-            //            isDownOnShape = true;
+            var multiSelect = Options.multiSelect;
+            if (e.Button == MouseButtons.Right) //при правом клике снимаем выделение фигур
+            {
+                multiSelect = false;
+                _mainList.Deselect();
+            }
 
-            //        }
-            //        if (Math.Abs(e.X - shapes.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
-            //            Math.Abs(e.Y - shapes.GetCenterPoint().Y) < 15)   //фигуры
-            //        {
-            //            points.Select();
+            if (e.Button == MouseButtons.Left)
+            {
+                var isSelect = false; //была ли выбрана фигура при клике
+                if (!multiSelect) _mainList.Deselect();
+                var i = 0;
+                foreach (var shape in _mainList)
+                {
+                    if (Math.Abs(mousePos.X - shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
+                            Math.Abs(mousePos.Y - shape.GetCenterPoint().Y) < 15)   //фигуры
+                    {
+                        isSelect = true;
+                        if (Control.ModifierKeys == Keys.Control) //если зажат Ctrl выделяется текущая фигура
+                        {
+                            multiSelect = true; //выбрано несколько фигур одновременно
+                            _mainList.AddToSelect(shape.ID);
+                            isDownOnShape = true; //Выбрана фигура
+                            shape.Select();
+                        }
+                        else
+                        {
+                            if (!shape.isSelect) _mainList.Deselect();
+                            shape.Select();
+                            _mainList.AddToSelect(shape.ID);
+                            _tempSelectedShape = shape.ID;
 
-            //            _tempSelectedShape = i;
-            //            isDownOnShape = true; //Выбрана фигура
-            //            Cursor.Current = Cursors.Hand;
-            //            if (Control.ModifierKeys == Keys.Control) //если зажат Ctrl выделяется текущая фигура
-            //            {
-            //                shapes.Select();
-            //            }
-            //        }
-            //        j++;
-            //    }
-            //    i++;
-            //}
+                            isDownOnShape = true; //Выбрана фигура
+                            Cursor.Current = Cursors.Hand;
+                        }
+                    }
+                    var j = 0;
+                    foreach (var point in shape)
+                    {
+                        if (Math.Abs(mousePos.X - point.X) < 10 && //Проверяем наличие курсора в область точки
+                            Math.Abs(mousePos.Y - point.Y) < 10)   //фигуры
+                        {
+                            point.Select();
+                            _tempSelectedPoint = j;
+                            _tempSelectedShape = shape.ID; // Сохраняем ключ фигуры
+                            isDownOnPoint = true;
+                            isDownOnShape = true;
+                        }
+                        j++;
+                    }
+                    i++;
+                }
+                if (!isSelect && Control.ModifierKeys != Keys.Control)
+                {
+                    _mainList.Deselect();
+                    multiSelect = false;
+                }
+            }
         }
 
         public void MouseMove(MouseEventArgs e, TPoint mousePos)
         {
-            //MousePos = new TPoint(e.X, e.Y); //Сохранение позиции мыши
-            //bool isPointSelected = false; //Выбрана ли точка в фигуре
-            ////var points = _mainList.GetPoints();
-            ////var shapes = _mainList.GetShapes();
-            ////                Перемещение                    //
-            //if (isDownOnPoint && !isDownOnShape) //Выбрана точка
-            //{
-            //    points.GetItem(_tempSelectedPoint).SetPoint(e.X, e.Y); //Перемещаем выбранную точку
-            //    Cursor.Current = Cursors.Hand;
-            //}
-            //else if (isDownOnShape && !isDownOnPoint) //Выбрана фигура
-            //{
-            //    //!
-            //    shapes.GetItem(_tempSelectedShape).Moving(MousePos);
-            //    foreach (var shape in shapes)
-            //    {
-            //        if (shape.isSelect) shapes.MovingSelected(MousePos);
-            //    }
-            //    //!
-            //     //Перемещаем выбранную фигуру
-            //    Cursor.Current = Cursors.Hand;
-            //}
-            //else if (isDownOnShape && isDownOnPoint) //Выбрана точка внутри фигуры
-            //{
-            //    shapes.GetItem(_tempSelectedShape).Points.SetItem(_tempSelectedPoint, MousePos); //Перемещаем выбранную точку
-            //    Cursor.Current = Cursors.Hand;
-            //}
-            ////                Подсветка точек и фигур при наведении          //
+            var multiSelect = Options.multiSelect;
+            bool isPointSelected = false; //Выбрана ли точка в фигуре
+            //                Перемещение                    //
+            if (isDownOnPoint && !isDownOnShape) //Выбрана точка
+            {
+                _mainList._list[_tempSelectedShape].GetItem(_tempSelectedPoint).SetPoint(mousePos.X, mousePos.Y); //Перемещаем выбранную точку
+                Cursor.Current = Cursors.Hand;
+            }
+            else if (isDownOnShape && !isDownOnPoint) //Выбрана фигура
+            {
+                //!
+                if (!multiSelect)
+                    _mainList._list[_tempSelectedShape].Moving(mousePos);
+                else
+                    _mainList.MovingSelected(mousePos);
+                //!
+                //Перемещаем выбранную фигуру
+                Cursor.Current = Cursors.Hand;
+            }
+            else if (isDownOnShape && isDownOnPoint) //Выбрана точка внутри фигуры
+            {
+                _mainList._list[_tempSelectedShape].Points.SetItem(_tempSelectedPoint, mousePos); //Перемещаем выбранную точку
+                Cursor.Current = Cursors.Hand;
+            }
+            //                Подсветка точек и фигур при наведении          //
 
-            //foreach (var point in points)
-            //{
-            //    if (Math.Abs(e.X - point.X) < 10 && //Проверяем наличие курсора в область точки
-            //        Math.Abs(e.Y - point.Y) < 10)
-            //    {
-            //        point.Select();
-            //    }
-            //    else
-            //    {
-            //        point.Deselect();
-            //    }
-            //}
-            //foreach (var shape in shapes)
-            //{
-            //    foreach (var point in shape)
-            //    {
-            //        if (Math.Abs(e.X - point.X) < 10 && //Проверяем наличие курсора в область точки
-            //            Math.Abs(e.Y - point.Y) < 10)   //фигуры
-            //        {
-            //            point.Select();
-            //            isPointSelected = true;
-            //        }
-            //        else
-            //        {
-            //            if (!shape.isSelect) point.Deselect();
-            //        }
-            //    }
-            //    if (Math.Abs(e.X - shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
-            //        Math.Abs(e.Y - shape.GetCenterPoint().Y) < 15)   //фигуры
-            //    {
-            //        foreach (var point in shape)
-            //        {
-            //            point.Select();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        foreach (var point in shape)
-            //        {
-            //            if (!isPointSelected && !shape.isSelect) point.Deselect();
-            //        }
-            //    }
-            //}
+            foreach (var shape in _mainList)
+            {
+                foreach (var point in shape)
+                {
+                    if (Math.Abs(mousePos.X - point.X) < 10 && //Проверяем наличие курсора в область точки
+                        Math.Abs(mousePos.Y - point.Y) < 10)   //фигуры
+                    {
+                        point.Select();
+                        isPointSelected = true;
+                    }
+                    else
+                    {
+                        if (!shape.isSelect) point.Deselect();
+                    }
+                }
+                if (Math.Abs(mousePos.X - shape.GetCenterPoint().X) < 15 && //Проверяем наличие курсора в области центра
+                    Math.Abs(mousePos.Y - shape.GetCenterPoint().Y) < 15)   //фигуры
+                {
+                    foreach (var point in shape)
+                    {
+                        point.Select();
+                    }
+                }
+                else
+                {
+                    foreach (var point in shape)
+                    {
+                        if (!isPointSelected && !shape.isSelect) point.Deselect();
+                    }
+                }
+
+                //Отрисовка
+                foreach (var shape1 in _mainList) //При наведении отрисовывается квадрат в центре фигуры
+                {
+                    if (mousePos != null && Math.Abs(mousePos.X - shape1.GetCenterPoint().X) < 15 &&
+                        Math.Abs(mousePos.Y - shape1.GetCenterPoint().Y) < 15)
+                    {
+                        _g.DrawRectangle(new Pen(Color.Red), shape1.GetCenterPoint().X - 5,
+                        shape1.GetCenterPoint().Y - 5, 10, 10);
+                    }
+                    else
+                    {
+                        _g.DrawRectangle(new Pen(Color.Gray), shape1.GetCenterPoint().X - 5,
+                        shape1.GetCenterPoint().Y - 5, 10, 10);
+                    }
+                    foreach (var point in shape1)
+                    {
+                        if (shape1.isSelect)
+                            _g.FillEllipse(new SolidBrush(Color.Red), point.X - 4, point.Y - 4, 8, 8);
+                        else
+                            _g.FillEllipse(new SolidBrush(Color.Black), point.X - 4, point.Y - 4, 8, 8);
+                    }
+                }
+            }
         }
 
         public void MouseUp(MouseEventArgs e, TPoint mousePos)
         {
-                isDownOnPoint = false;
-                isDownOnShape = false;
-                Cursor.Current = Cursors.Default;
+            _mainList.isMouseUp = false;
+            isDownOnPoint = false;
+            isDownOnShape = false;
+            //_mainList._list[_tempSelectedShape].Deselect();
+            Cursor.Current = Cursors.Default;
         }
 
         public void Paint(PaintEventArgs e, TPoint mousePos)
         {
             //var shapes = _mainList.GetShapes();
             //var rects = _mainList.GetRectangles();
-            //foreach (var shape in shapes) //При наведении отрисовывается квадрат к центре фигуры
-            //{
-            //    if (MousePos != null && Math.Abs(MousePos.X - shape.GetCenterPoint().X) < 15 &&
-            //        Math.Abs(MousePos.Y - shape.GetCenterPoint().Y) < 15)
-            //    {
-            //        e.Graphics.DrawRectangle(new Pen(Color.Red), shape.GetCenterPoint().X - 5,
-            //        shape.GetCenterPoint().Y - 5, 10, 10);
-            //    }
-            //    else
-            //    {
-            //        e.Graphics.DrawRectangle(new Pen(Color.Gray), shape.GetCenterPoint().X - 5,
-            //        shape.GetCenterPoint().Y - 5, 10, 10);
-            //    }
-            //}
-            //foreach (var shape in rects) //При наведении отрисовывается квадрат к центре фигуры
-            //{
-            //    if (MousePos != null && Math.Abs(MousePos.X - shape.GetCenterPoint().X) < 15 &&
-            //        Math.Abs(MousePos.Y - shape.GetCenterPoint().Y) < 15)
-            //    {
-            //        e.Graphics.DrawRectangle(new Pen(Color.Red), shape.GetCenterPoint().X - 5,
-            //        shape.GetCenterPoint().Y - 5, 10, 10);
-            //    }
-            //    else
-            //    {
-            //        e.Graphics.DrawRectangle(new Pen(Color.Gray), shape.GetCenterPoint().X - 5,
-            //        shape.GetCenterPoint().Y - 5, 10, 10);
-            //    }
-            //}
+
         }
 
     }

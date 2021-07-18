@@ -103,6 +103,16 @@ namespace Vector_Editor
             // InputPosY
             // 
             this.InputPosY.Location = new System.Drawing.Point(136, 59);
+            this.InputPosY.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.InputPosY.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
             this.InputPosY.Name = "InputPosY";
             this.InputPosY.Size = new System.Drawing.Size(57, 22);
             this.InputPosY.TabIndex = 7;
@@ -110,8 +120,13 @@ namespace Vector_Editor
             // InputPosX
             // 
             this.InputPosX.Location = new System.Drawing.Point(42, 59);
+            this.InputPosX.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.InputPosX.Minimum = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             -2147483648});
