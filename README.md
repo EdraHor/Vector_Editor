@@ -8,5 +8,7 @@
 - Цвет заливки и цвет контура, размер контура
 - Открытие и сохранение изображения
 
-![](C:\Users\User\source\repos\Vector_Editor v4\Images\ve_1.png)
-![](C:\Users\User\source\repos\Vector_Editor v4\Images\ve_2.png)
+![](.\Images\ve_1.png)
+
+
+![](.\Images\ve_2.png)
